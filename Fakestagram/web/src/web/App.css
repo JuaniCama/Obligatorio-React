@@ -1,0 +1,94 @@
+@import url('https://fonts.googleapis.com/css2?family=Anton&display=swap');
+
+/* Contenedor general que usa Flexbox */
+.app-container {
+  display: flex;
+  min-height: 100vh;
+  /* Altura mínima de toda la pantalla */
+}
+
+/* Barra de navegación fija a la izquierda */
+.sidebar {
+  width: 250px;
+  /* Ancho fijo de la columna */
+  background-color: #f4f4f4;
+  /* Color de fondo */
+  padding: 20px;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  position: fixed;
+  /* Fijo al scroll */
+  height: 100vh;
+  /* Altura completa de la pantalla */
+  top: 0;
+  /* Fijo al inicio de la página */
+  left: 0;
+  /* Pegado a la izquierda */
+}
+
+
+/* Contenedor del contenido principal */
+.content {
+  margin-left: 250px;
+  /* Espacio para la barra lateral */
+  padding: 20px;
+  width: calc(100% - 250px);
+  /* El contenido ocupará el resto del espacio */
+  min-height: 100vh;
+  /* Altura mínima de toda la pantalla */
+  background-color: #fff;
+  /* Color de fondo blanco */
+  box-sizing: border-box;
+  /* Para incluir el padding en el ancho total */
+}
+
+
+
+.sidebar h2 {
+  margin-bottom: 20px;
+}
+
+.sidebar ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.sidebar ul li {
+  margin: 15px 0;
+}
+
+.sidebar ul li a {
+  text-decoration: none;
+  color: #333;
+  font-weight: bold;
+}
+
+.sidebar ul li a:hover {
+  color: #007bff;
+  /* Color al pasar el ratón */
+}
+
+
+.sidebar h2 {
+  font-family: 'Anton', sans-serif;
+  /* Fuente similar */
+  font-size: 35px;
+  /* Tamaño grande */
+  font-weight: bold;
+  /* Negrita */
+  color: #000;
+  /* Color negro */
+  letter-spacing: -1px;
+  /* Espaciado de letras ajustado */
+  text-align: center;
+  /* Centrar el texto */
+  margin-bottom: 20px;
+  /* Espacio debajo del título */
+}
+
+.icono {
+  margin-right: 10px;
+}
+
+body {
+  background-color: #fff;
+}
