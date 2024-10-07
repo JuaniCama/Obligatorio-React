@@ -284,6 +284,9 @@ FakesAssemblies/
 # Node.js Tools for Visual Studio
 .ntvs_analysis.dat
 node_modules/
+Fakestagram\web\node_modules
+Fakestagram\mobile\fakestagram-expo\node_modules
+Fakestagram\backend\node_modules
 
 # Visual Studio 6 build log
 *.plg

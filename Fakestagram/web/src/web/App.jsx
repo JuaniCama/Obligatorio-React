@@ -3,6 +3,8 @@ import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import Home from '@web/components/Home.jsx';
 import Profile from '@web/components/Profile.jsx';
 import Notifications from '@web/components/Notifications.jsx';
+import Auth from '@web/components/Auth.jsx';
+
 import './App.css'; // Importar el archivo CSS
 
 function App() {
@@ -24,7 +26,10 @@ function App() {
               <i class="fa-solid fa-user icono"> </i>
               <Link to="/profile">Profile</Link>
             </li>
-
+            <li>
+              <i class="fa-solid fa-user icono"> </i>
+              <Link to="/auth">Auth</Link>
+            </li>
           </ul>
         </nav>
 
@@ -33,6 +38,8 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/notifications" element={<Notifications />} />
+            <Route path="/auth" element={<Auth />} />
+
           </Routes>
         </div>
       </div>
