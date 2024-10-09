@@ -1,83 +1,90 @@
 /* Estilos para el contenedor del perfil */
 .profile-container {
-    max-width: 900px;
-    margin: 0 auto;
-    padding: 20px;
-  }
-  
-  /* Estilos para el encabezado del perfil */
-  .profile-header {
-    display: flex;
-    align-items: center;
-    margin-bottom: 20px;
-  }
-  
-  /* Estilos para el avatar del usuario */
-  .profile-avatar {
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
-    object-fit: cover;
-    margin-right: 20px;
-  }
-  
-  /* Estilos para la información del usuario */
-  .profile-info {
-    flex: 1;
-  }
-  
-  /* Estilos para el nombre de usuario y botón de editar */
-  .profile-username {
-    display: flex;
-    align-items: center;
-    margin-bottom: 10px;
-  }
-  
-  .profile-username h2 {
-    margin-right: 10px;
-    font-size: 24px;
-  }
-  
-  .edit-profile-btn {
-    padding: 5px 10px;
-    background-color: #eee;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  /* Estilos para las estadísticas de publicaciones y amigos */
-  .profile-stats {
-    display: flex;
-    gap: 20px;
-    font-size: 16px;
-    margin-bottom: 10px;
-  }
-  
-  /* Estilos para la biografía */
-  .profile-bio p {
-    margin: 5px 0;
-  }
-  
-  /* Estilos para la grilla de publicaciones */
-  .profile-posts {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    gap: 20px;
-  }
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px;
+}
 
-  /* Asegúrate de aplicar este estilo al texto que está en la sección del perfil */
+/* Estilos para el encabezado del perfil */
+.profile-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+/* Estilos para el avatar del usuario */
+.profile-avatar {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 20px;
+}
+
+/* Estilos para la información del usuario */
+.profile-info {
+  flex: 1;
+}
+
+/* Estilos para el nombre de usuario y botón de editar */
+.profile-username {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.profile-username h2 {
+  margin-right: 10px;
+  font-size: 24px;
+}
+
+.edit-profile-btn {
+  padding: 5px 10px;
+  background-color: #eee;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+/* Estilos para las estadísticas de publicaciones y amigos */
+.profile-stats {
+  display: flex;
+  gap: 20px;
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+
+/* Estilos para la biografía */
+.profile-bio p {
+  margin: 5px 0;
+}
+
+/* Estilos para la grilla de publicaciones */
+.profile-posts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(200px, 1fr)); /* Aumenta el tamaño mínimo de las imágenes */
+  gap: 20px;
+}
+
+.profile-posts img {
+  width: 100%;
+  aspect-ratio: 1 / 1; /* Asegura que las imágenes mantengan una relación 1:1 */
+  border-radius: 10px; /* Le da bordes redondeados a las imágenes */
+  object-fit: cover;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Añade una ligera sombra para darle estilo */
+}
+
+/* Asegúrate de aplicar este estilo al texto que está en la sección del perfil */
 .profile-container {
-    color: #000; /* Color negro para todo el texto */
-  }
-  
-  .profile-info h2,
-  .profile-info p,
-  .profile-info span {
-    color: #000; /* Asegúrate de que los títulos y descripciones también tengan color negro */
-  }
-  
-  .profile-info strong {
-    color: #000; /* El texto en negrita también debe ser negro */
-  }
-  
+  color: #000; /* Color negro para todo el texto */
+}
+
+.profile-info h2,
+.profile-info p,
+.profile-info span {
+  color: #000; /* Asegúrate de que los títulos y descripciones también tengan color negro */
+}
+
+.profile-info strong {
+  color: #000; /* El texto en negrita también debe ser negro */
+}
