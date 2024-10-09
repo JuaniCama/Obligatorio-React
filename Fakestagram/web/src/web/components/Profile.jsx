@@ -9,6 +9,9 @@ function Profile() {
     { id: 1, image: 'url1.jpg', caption: 'First post' },
     { id: 2, image: 'url2.jpg', caption: 'Second post' },
     { id: 3, image: 'url3.jpg', caption: 'Third post' },
+    { id: 4, image: 'url3.jpg', caption: 'Third post' },
+    { id: 5, image: 'url3.jpg', caption: 'Third post' },
+    { id: 6, image: 'url3.jpg', caption: 'Third post' },
     // Agrega más posts
   ];
 
@@ -39,7 +42,10 @@ function Profile() {
 
       <div className="profile-posts">
         {userPosts.map(post => (
-          <Post key={post.id} image={post.image} caption={post.caption} />
+          <Post 
+            imageUrl="https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcR-rsc7p9uXmx-i2PbvpYl34uQQFrlJ6VcwHnzq7-yLEuaQpGLE75otAhKvvXyBWZXeUWoyVjhQUu965l0t6DMZ6dDnPDRX1EofAcJFYg" 
+            profileView={true}
+          />
         ))}
       </div>
     </div>
