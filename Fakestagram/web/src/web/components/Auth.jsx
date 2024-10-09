@@ -8,8 +8,24 @@ const Auth = () => {
   const [token, setToken] = useState(null);
   const [isRegistering, setIsRegistering] = useState(true); // Toggle entre registro y login
 
+  // Validación de email
+  const isValidEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
   // Función para registrar al usuario
   const register = async () => {
+    if (!isValidEmail(email)) {
+      alert('Por favor ingresa un correo electrónico válido.');
+      return;
+    }
+
+    if (password.length < 4) {
+      alert('La contraseña debe tener al menos 4 caracteres.');
+      return;
+    }
+
     try {
       const response = await axios.post('http://localhost:3001/api/auth/register', {
         username,
@@ -25,6 +41,16 @@ const Auth = () => {
 
   // Función para iniciar sesión
   const login = async () => {
+    if (!isValidEmail(email)) {
+      alert('Por favor ingresa un correo electrónico válido.');
+      return;
+    }
+
+    if (password.length < 4) {
+      alert('La contraseña debe tener al menos 4 caracteres.');
+      return;
+    }
+
     try {
       const response = await axios.post('http://localhost:3001/api/auth/login', {
         email,
