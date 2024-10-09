@@ -32,8 +32,6 @@
   /* Espacio para la barra lateral */
   padding: 20px;
   width: calc(100% - 250px);
-  /* El contenido ocupará el resto del espacio */
-  min-height: 100vh;
   /* Altura mínima de toda la pantalla */
   background-color: #fff;
   /* Color de fondo blanco */

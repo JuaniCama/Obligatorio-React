@@ -1,5 +1,7 @@
 import React from 'react';
 import Post from './Post'; // Importa el componente Post
+import './Home.css'; // Archivo CSS que contiene los estilos
+
 
 function Home() {
   return (
