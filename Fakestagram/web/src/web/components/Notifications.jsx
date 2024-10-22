@@ -1,10 +1,18 @@
 import React from 'react';
+import './Notification.css';
 
-function Notifications() {
+function Notifications({ profileImageUrl, username, notificationMessage, timeAgo }) {
   return (
-    <div>
-      <h2>Notifications</h2>
-      <p>Pila de notificacioneeees 😎</p>
+    <div className="notification-box">
+      <figure className="notification-image">
+        <img src={profileImageUrl} alt={`${username}'s profile`} className="profile-image" />
+      </figure>
+      <div className="notification-content">
+        <p>
+          <strong>{username}</strong> {notificationMessage}
+        </p>
+        <small className="time-ago">{timeAgo}</small>
+      </div>
     </div>
   );
 }
