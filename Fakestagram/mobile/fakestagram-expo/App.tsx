@@ -1,11 +1,13 @@
 import React from 'react';
-import { enableScreens } from 'react-native-screens';
+import { NavigationContainer } from '@react-navigation/native';
 import BottomNavigation from './BottomNavigation';
 
-enableScreens();
-
-const App: React.FC = () => {
-  return <BottomNavigation />;
+const App = () => {
+  return (
+    <NavigationContainer>
+      <BottomNavigation />
+    </NavigationContainer>
+  );
 };
 
 export default App;

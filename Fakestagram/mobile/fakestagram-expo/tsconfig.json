@@ -1,6 +1,25 @@
 {
-  "extends": "expo/tsconfig.base",
   "compilerOptions": {
-    "strict": true
-  }
+    "target": "esnext",
+    "module": "esnext",
+    "jsx": "react-native",
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
+    "isolatedModules": true
+  },
+  "include": [
+    "./components",
+    "./styles"
+,  ],
+  "exclude": [
+    "**/__mocks__/*",
+    "**/__tests__/*",
+    "node_modules"
+  ],
+  "extends": "expo/tsconfig.base"
 }

@@ -1,37 +1,23 @@
 import React from 'react';
-import { View, Text, Image, Button, FlatList } from 'react-native';
-import { ProfileScreenProps } from '../type';  // Importamos los tipos
-import { globalStyles } from '../styles/styles';  // Importamos los estilos
+import { View, Text, Button } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useNavigation, NavigationProp } from '@react-navigation/native';
+import styles from '../styles/styles';
+import { RootStackParamList } from '../types'; 
 
-interface Post {
-  id: string;
-  imageUri: string;
-}
+const Profile: React.FC = () => {
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
-const Profile: React.FC<ProfileScreenProps> = ({ route }) => {
-  const { isUserProfile } = route.params;
-
-  const posts: Post[] = [
-    { id: '1', imageUri: 'https://example.com/photo1.jpg' },
-    { id: '2', imageUri: 'https://example.com/photo2.jpg' },
-  ];
+  const logout = async () => {
+    await AsyncStorage.removeItem('token'); // Eliminar el token de autenticación
+    navigation.navigate('Auth'); // Navegar a la pantalla de autenticación
+  };
 
   return (
-    <View style={globalStyles.container}>
-      <Image source={{ uri: 'https://example.com/profile.jpg' }} style={globalStyles.profileImage} />
-      <Text>Username</Text>
-      <Text>Bio goes here...</Text>
-      {isUserProfile ? (
-        <Button title="Edit Profile" onPress={() => console.log('Editing profile')} />
-      ) : (
-        <Button title="Add Friend" onPress={() => console.log('Adding friend')} />
-      )}
-      <FlatList
-        data={posts}
-        keyExtractor={(item) => item.id}
-        numColumns={3}
-        renderItem={({ item }) => <Image source={{ uri: item.imageUri }} style={globalStyles.postImage} />}
-      />
+    <View style={styles.container}>
+      <Text style={styles.authTitle}>Este es el perfil</Text>
+      <Button title="Ir al Feed" onPress={() => navigation.navigate('Feed')} />
+      <Button title="Cerrar sesión" onPress={logout} />
     </View>
   );
 };
