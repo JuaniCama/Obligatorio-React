@@ -9,6 +9,11 @@ import { FEED_ENDPOINT } from './Constants';
 const fetchPosts = async () => {
   try {
     const token = localStorage.token;
+    if(!token){
+      alert('No se encontró un token de autenticación. Inicia sesión nuevamente.');
+      return;
+    }
+
     const response = await axios.get(`${FEED_ENDPOINT}`, {
       headers: { "Authorization": `Bearer ${token}` }
     }
@@ -31,14 +36,14 @@ function Home() {
   return (
     <div className="content">
       <div className="feed">
-        <h2>Acá habria historias si me pagaran</h2>
+        <h2>Fakestagram Feed</h2>
 
         <div>
           {posts.map((post) =>
             <Post
               key={post.id}
               username={post.user.username}
-              profileImageUrl={post.user.profileImageUrl}
+              profileImageUrl={post.user.profilePicture}
               postTime={post.createdAt}
               imageUrl={post.imageUrl}
               description={post.caption}

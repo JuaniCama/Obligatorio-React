@@ -58,6 +58,7 @@ const Auth = () => {
       });
       setToken(response.data.token); // Guardar el token en el estado
       localStorage.setItem('token', response.data.token); // Guardar el token en localStorage
+      localStorage.setItem('userId', response.data._id); // Guardar el userId en localStorage
       alert('Login exitoso');
     } catch (err) {
       console.error(err);
