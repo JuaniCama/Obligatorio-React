@@ -1,8 +1,8 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
-import Post from './Post'; // Asumiendo que tienes un componente Post para cada post individual
-import './Profile.css'; // Archivo CSS que contiene los estilos
-import { PROFILE_ENDPOINT } from './Constants';
+import Post from '../components/Post'; // Asumiendo que tienes un componente Post para cada post individual
+import './css/Profile.css'; // Archivo CSS que contiene los estilos
+import { PROFILE_ENDPOINT } from '../components/Constants';
 import axios from 'axios';
 
 // Obtener el perfil del usuario dado su ID

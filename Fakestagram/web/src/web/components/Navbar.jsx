@@ -1,5 +1,5 @@
 import React from 'react';
-import './Navbar.css';
+import '@web/components/css/Navbar.css';
 
 function Navbar({ isLoggedIn, onLogOff, onNavigate }) {
   return (

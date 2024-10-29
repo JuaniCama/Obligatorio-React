@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import Navbar from '@web/components/Navbar.jsx';
 import Sidebar from '@web/components/Sidebar.jsx';
-import Home from '@web/components/Home.jsx';
+import Home from '@web/screens/Home.jsx';
 import Notifications from '@web/components/Notifications.jsx';
-import Profile from '@web/components/Profile.jsx';
-import Login from '@web/components/Login.jsx';
-import Signup from '@web/components/Signup.jsx';
+import Profile from '@web/screens/Profile.jsx';
+import Login from '@web/screens/Login.jsx';
+import Signup from '@web/screens/Signup.jsx';
 
 import './App.css';
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState } from 'react';
-import './Post.css';
+import '@web/components/css/Post.css';
 
 function Post({ username, profileImageUrl, postTime, imageUrl, description, profileView = false }) {
   const [hasLikes, setHasLikes] = useState(false);

@@ -1,10 +1,10 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import Post from './Post'; // Importa el componente Post
-import Notifications from './Notifications'; // Importa el componente Notification
-import './Home.css'; // Archivo CSS que contiene los estilos
-import { FEED_ENDPOINT } from './Constants';
+import Post from '../components/Post'; // Importa el componente Post
+import Notifications from '../components/Notifications'; // Importa el componente Notification
+import './css/Home.css'; // Archivo CSS que contiene los estilos
+import { FEED_ENDPOINT } from '../components/Constants';
 
 
 

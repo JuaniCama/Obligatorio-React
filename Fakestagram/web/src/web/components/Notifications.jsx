@@ -1,5 +1,5 @@
 import React from 'react';
-import './Notification.css';
+import '@web/components/css/Notification.css';
 
 function Notifications({ profileImageUrl, username, notificationMessage, timeAgo }) {
   return (
