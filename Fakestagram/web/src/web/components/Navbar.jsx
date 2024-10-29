@@ -1,16 +1,28 @@
 import React from 'react';
 import './Navbar.css';
 
-function Navbar({ onNavigate }) {
-    return (
-        <nav className="navbar">
-            <h2>fakestagram</h2>
-            <div className="navbar-buttons">
-                <button className="btn" onClick={() => onNavigate('auth')}>Sign Up</button>
-                <button className="btn" onClick={() => onNavigate('auth')}>Login</button>
-            </div>
-        </nav>
-    );
+function Navbar({ isLoggedIn, onLogOff, onNavigate }) {
+  return (
+    <nav className="navbar">
+      <div className="navbar-title">Fakestagram</div>
+      <div className="navbar-buttons">
+        {isLoggedIn ? (
+          <button className="btn" onClick={onLogOff}>
+            Log Off
+          </button>
+        ) : (
+          <>
+            <button className="btn" onClick={() => onNavigate('signup')}>
+              Sign Up
+            </button>
+            <button className="btn" onClick={() => onNavigate('login')}>
+              Login
+            </button>
+          </>
+        )}
+      </div>
+    </nav>
+  );
 }
 
 export default Navbar;
