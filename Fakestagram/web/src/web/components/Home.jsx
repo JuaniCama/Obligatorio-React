@@ -6,24 +6,28 @@ import Notifications from './Notifications'; // Importa el componente Notificati
 import './Home.css'; // Archivo CSS que contiene los estilos
 import { FEED_ENDPOINT } from './Constants';
 
-const fetchPosts = async () => {
-  try {
-    const token = localStorage.token;
-    if(!token){
-      alert('No se encontró un token de autenticación. Inicia sesión nuevamente.');
-      return;
-    }
 
-    const response = await axios.get(`${FEED_ENDPOINT}`, {
-      headers: { "Authorization": `Bearer ${token}` }
-    }
-    );
+  /*
+  const fetchPosts = async () => {
+    try {
+      const token = localStorage.token;
+      
+      if(!token){
+        alert('No se encontró un token de autenticación. Inicia sesión nuevamente.');
+        return;
+      }
 
-    return response.data;
-  } catch (error) {
-    console.log(error);
+      const response = await axios.get(`${FEED_ENDPOINT}`, {
+        headers: { "Authorization": `Bearer ${token}` }
+      }
+      );
+
+      return response.data;
+    } catch (error) {
+      console.log(error);
+    }
   }
-}
+  */
 
 function Home() {
   const [posts, setPosts] = useState([]);

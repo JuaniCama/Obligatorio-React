@@ -6,35 +6,33 @@
   box-sizing: border-box;
 }
 
-/* Barra de navegación a la izquierda */
-.sidebar {
-  flex: 0 0 250px; /* Fija el ancho de la barra a 250px */
-  background-color: #f4f4f4;
-  padding: 20px;
-  height: 100vh; /* Ocupa toda la altura */
-  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-  position: sticky; /* Se mantiene visible al hacer scroll */
-  top: 0;
-}
+
 
 /* Contenedor del contenido principal */
 .content {
   display: flex;
-  flex-grow: 1; 
-  height: 100vh; /* Altura completa de la pantalla */
+  flex-grow: 1;
+  height: 100vh;
+  /* Altura completa de la pantalla */
   justify-content: space-between;
-  overflow-y: hidden; /* Evita el scroll en el contenedor principal */
+  overflow-y: hidden;
+  /* Evita el scroll en el contenedor principal */
 }
 
 /* Feed que ocupará la mayor parte del espacio */
 .feed {
-  flex: 2; /* Reduce el espacio del feed */
+  flex: 2;
+  /* Reduce el espacio del feed */
   display: flex;
   flex-direction: column;
-  gap: 20px; /* Espacio entre posts */
-  overflow-y: auto; /* Permite el scroll dentro del feed */
-  padding-right: 10px; /* Añade un poco de espacio para evitar que el scroll solape el contenido */
-  height: 100vh; /* Limita la altura del feed */
+  gap: 20px;
+  /* Espacio entre posts */
+  overflow-y: auto;
+  /* Permite el scroll dentro del feed */
+  padding-right: 10px;
+  /* Añade un poco de espacio para evitar que el scroll solape el contenido */
+  height: 100vh;
+  /* Limita la altura del feed */
   box-sizing: border-box;
 }
 
@@ -44,12 +42,20 @@
   background-color: #f9f9f9;
   padding-left: 20px;
   border-left: 1px solid #ddd;
-  height: 100vh; /* Altura completa */
+  height: 100vh;
+  /* Altura completa */
   overflow-y: auto;
   box-sizing: border-box;
   padding-top: 20px;
 }
 
+.navbar h2 {
+  font-family: 'Anton', sans-serif;
+  font-size: 30px;
+  text-align: center;
+  margin-bottom: 5px;
+  color: white;
+}
 
 .sidebar h2 {
   font-family: 'Anton', sans-serif;
@@ -83,4 +89,18 @@
 
 body {
   background-color: #fff;
+}
+
+/* Barra de navegación a la izquierda */
+.sidebar {
+  flex: 0 0 250px;
+  /* Fija el ancho de la barra a 250px */
+  background-color: #f4f4f4;
+  padding: 20px;
+  height: 100vh;
+  /* Ocupa toda la altura */
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  /* Se mantiene visible al hacer scroll */
+  margin-top: 50px;
 }

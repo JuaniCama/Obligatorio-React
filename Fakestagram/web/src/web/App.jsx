@@ -1,49 +1,37 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import Navbar from '@web/components/Navbar.jsx';
+import Sidebar from '@web/components/Sidebar.jsx';
 import Home from '@web/components/Home.jsx';
-import Profile from '@web/components/Profile.jsx';
 import Notifications from '@web/components/Notifications.jsx';
+import Profile from '@web/components/Profile.jsx';
 import Auth from '@web/components/Auth.jsx';
 
-import './App.css'; // Importar el archivo CSS
+import './App.css';
 
 function App() {
+  const [currentScreen, setCurrentScreen] = useState('home');
+
+  const renderScreen = () => {
+    switch (currentScreen) {
+      case 'home':
+        return <Home />;
+      case 'notifications':
+        return <Notifications />;
+      case 'profile':
+        return <Profile />;
+      case 'auth':
+        return <Auth />;
+      default:
+        return <Home />;
+    }
+  };
+
   return (
-    <Router>
-      <div className="app-container">
-        <nav className="sidebar">
-          <h2>fakestagram</h2>
-          <ul>
-            <li>
-              <i class="fa-solid fa-house icono">  </i>
-              <Link to="/">Home</Link>
-            </li>
-            <li>
-              <i class="fa-solid fa-heart icono"> </i>
-              <Link to="/notifications">Notifications</Link>
-            </li>
-            <li>
-              <i class="fa-solid fa-user icono"> </i>
-              <Link to="/profile">Profile</Link>
-            </li>
-            <li>
-              <i class="fa-solid fa-user icono"> </i>
-              <Link to="/auth">Auth</Link>
-            </li>
-          </ul>
-        </nav>
-
-        <div className="content">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/notifications" element={<Notifications />} />
-            <Route path="/auth" element={<Auth />} />
-
-          </Routes>
-        </div>
-      </div>
-    </Router>
+    <div className="app-container">
+      <Navbar onNavigate={setCurrentScreen} />
+      <Sidebar onNavigate={setCurrentScreen} />
+      <div className="content">{renderScreen()}</div>
+    </div>
   );
 }
 
