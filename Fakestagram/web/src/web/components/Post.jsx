@@ -1,14 +1,16 @@
 import React from 'react';
+import { useState } from 'react';
 import './Post.css';
 
 function Post({ username, profileImageUrl, postTime, imageUrl, description, profileView = false }) {
+  const [hasLikes, setHasLikes] = useState(false);
+
+  function handleLike(){
+    setHasLikes(!hasLikes);
+  }
+
   return (
     <div className={`box ${profileView ? 'profile-view' : 'feed-view'}`}>
-      {/* Imagen del post */}
-      <div className={`image ${profileView ? 'is-square' : 'is-4by3'}`}>
-        <img src={imageUrl} alt="Post" className="post-image" />
-      </div>
-
       {/* Solo muestra el header si no está en la vista de perfil */}
       {
         !profileView && (
@@ -26,6 +28,21 @@ function Post({ username, profileImageUrl, postTime, imageUrl, description, prof
             </div>
           </article>
         )}
+
+      {/* Imagen del post */}
+      <div className={`image ${profileView ? 'is-square' : 'is-4by3'}`}>
+        <img src={imageUrl} alt="Post" className="post-image" />
+      </div>
+
+      {/* Likes y comentarios*/}
+      {!profileView &&
+        <div>
+          <div className="content-vertical">
+            <button onClick={handleLike}>{hasLikes ? <i class="fa-solid fa-heart"></i> : <i class="fa-regular fa-heart"></i>}</button>
+            <small>32 Likes</small>
+          </div>
+        </div>
+      }
     </div>
   );
 }
