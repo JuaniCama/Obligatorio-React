@@ -7,23 +7,19 @@ import Profile from '@web/components/Profile.jsx';
 import Login from '@web/components/Login.jsx';
 import Signup from '@web/components/Signup.jsx';
 
-
-
 import './App.css';
 
 function App() {
-  const [currentScreen, setCurrentScreen] = useState('home');
+  const [currentScreen, setCurrentScreen] = useState('login'); // Empieza en login
   const [token, setToken] = useState(localStorage.getItem('token') || null);
 
-  // redirige al login si no hay token
-
+  // Redirige a la pantalla de login si no hay token
   useEffect(() => {
     if (!token) {
       setCurrentScreen('login');
     }
   }, [token]);
 
-  // logica de renderizado
   const renderScreen = () => {
     if (!token) {
       // Si no hay token, muestra Login o Signup
@@ -42,7 +38,7 @@ function App() {
       );
     }
 
-
+    // Si hay token, muestra las pantallas protegidas
     switch (currentScreen) {
       case 'home':
         return <Home />;
@@ -50,30 +46,21 @@ function App() {
         return <Notifications />;
       case 'profile':
         return <Profile />;
-      case 'login':
-        return <Login
-          onLogin={(token) => setToken(token)}
-          onNavigate={setCurrentScreen}
-        />;
-      case 'signup':
-        return <Signup />;
       default:
         return <Home />;
     }
   };
 
-  // logica del logoff
   const handleLogOff = () => {
     setToken(null);
-    localStorage.removeItem('token');
-    localStorage.removeItem('userId');
-    setCurrentScreen('login');
+    localStorage.removeItem('token'); // Elimina el token
+    localStorage.removeItem('userId'); // Elimina el userId
+    setCurrentScreen('login'); // Redirige a Login después de cerrar sesión
   };
-
 
   return (
     <div className="app-container">
-      {token && ( // Renderiza la Navbar solo si hay token
+      {(token || currentScreen === 'login' || currentScreen === 'signup') && (
         <Navbar
           isLoggedIn={!!token}
           onLogOff={handleLogOff}
