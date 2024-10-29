@@ -69,6 +69,10 @@
   padding: 0;
 }
 
+.sidebar i {
+  color: black; /* Cambia el color de los íconos a negro */
+}
+
 .sidebar ul li {
   margin: 15px 0;
 }
