@@ -1,5 +1,4 @@
-import React from 'react';
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import Post from '../components/Post'; // Asumiendo que tienes un componente Post para cada post individual
 import './css/Profile.css'; // Archivo CSS que contiene los estilos
 import { PROFILE_ENDPOINT } from '../components/Constants';
@@ -17,26 +16,55 @@ const fetchProfile = async () => {
 
     const response = await axios.get(`${PROFILE_ENDPOINT}` + userId, {
       headers: { "Authorization": `Bearer ${token}` }
-    }
-    );
+    });
 
     return response.data;
-
   } catch (error) {
     console.log(error);
   }
-}
+};
+
+const updateProfile = async (profileData) => {
+  try {
+    const token = localStorage.token;
+    if (!token) {
+      alert('No se encontró el token. Inicia sesión nuevamente.');
+      return;
+    }
+
+    const response = await axios.put(`${PROFILE_ENDPOINT}edit`, profileData, {
+      headers: { "Authorization": `Bearer ${token}` }
+    });
+
+    return response.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
 
 function Profile() {
-  const [profile, setProfile] = useState([]);
+  const [profile, setProfile] = useState({});
+  const [isEditing, setIsEditing] = useState(false);
+  const [username, setUsername] = useState('');
+  const [profilePicture, setProfilePicture] = useState('');
 
   useEffect(() => {
     const getProfile = async () => {
       const data = await fetchProfile();
-      setProfile(data);
+      if (data) {
+        setProfile(data);
+        setUsername(data.user?.username || '');
+        setProfilePicture(data.user?.profilePicture || '');
+      }
     };
     getProfile();
   }, []);
+
+  const handleEdit = async () => {
+    const updatedProfile = await updateProfile({ username, profilePicture });
+    setProfile(updatedProfile);
+    setIsEditing(false);
+  };
 
   return (
     <div className="profile-container">
@@ -46,11 +74,29 @@ function Profile() {
           alt="User Avatar"
           className="profile-avatar"
         />
-
         <div className="profile-info">
           <div className="profile-username">
-            <h2>{profile.user?.username}</h2>
-            <button className="edit-profile-btn">Edit profile</button>
+            {isEditing ? (
+              <>
+                <input
+                  type="text"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                />
+                <input
+                  type="text"
+                  value={profilePicture}
+                  onChange={(e) => setProfilePicture(e.target.value)}
+                />
+                <button onClick={handleEdit}>Save</button>
+                <button onClick={() => setIsEditing(false)}>Cancel</button>
+              </>
+            ) : (
+              <>
+                <h2>{profile.user?.username}</h2>
+                <button className="edit-profile-btn" onClick={() => setIsEditing(true)}>Edit profile</button>
+              </>
+            )}
           </div>
           <div className="profile-stats">
             <span>{profile.posts?.length} posts</span>
@@ -62,10 +108,10 @@ function Profile() {
           </div>
         </div>
       </div>
-
       <div className="profile-posts">
         {profile.posts?.map(post => (
           <Post
+            key={post._id} // Asegúrate de que cada Post tenga una key única
             imageUrl={post.imageUrl}
             profileView={true}
           />

@@ -1,12 +1,9 @@
-import React from 'react';
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Post from '../components/Post'; // Importa el componente Post
 import Notifications from '../components/Notifications'; // Importa el componente Notification
 import './css/Home.css'; // Archivo CSS que contiene los estilos
 import { FEED_ENDPOINT } from '../components/Constants';
-
-
 
 const fetchPosts = async () => {
   try {
@@ -18,44 +15,43 @@ const fetchPosts = async () => {
 
     const response = await axios.get(`${FEED_ENDPOINT}`, {
       headers: { "Authorization": `Bearer ${token}` }
-    }
-    );
+    });
 
     return response.data;
   } catch (error) {
     console.log(error);
   }
-}
-
+};
 
 function Home() {
   const [posts, setPosts] = useState([]);
 
-  useEffect(() => async () => {
-    const data = await fetchPosts();
-    setPosts(data);
-  }, [])
+  useEffect(() => {
+    const getPosts = async () => {
+      const data = await fetchPosts();
+      setPosts(data);
+    };
+    getPosts();
+  }, []);
 
   return (
     <div className="content">
       <div className="feed">
         <h2>Fakestagram Feed</h2>
-
         <div>
-          {posts.map((post) =>
+          {posts.map((post) => (
             <Post
               key={post.id}
-              username={post.user.username}
-              profileImageUrl={post.user.profilePicture}
+              username={post.user?.username || 'Usuario desconocido'}
+              profileImageUrl={post.user?.profilePicture || 'defaultProfileImageUrl'}
               postTime={post.createdAt}
               imageUrl={post.imageUrl}
               description={post.caption}
               profileView={false}
             />
-          )}
+          ))}
         </div>
       </div>
-
       <div className="notifications">
         <h2>Notificaciones</h2>
         <Notifications
