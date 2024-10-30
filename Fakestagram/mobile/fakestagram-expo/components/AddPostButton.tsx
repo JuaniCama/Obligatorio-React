@@ -1,133 +1,210 @@
 import React, { useState } from 'react';
-import { Button, Modal, View, Text, TextInput, Alert } from 'react-native';
+import { View, Modal, TextInput, Alert, TouchableOpacity, Text, Image, StyleSheet } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import styles from '../styles/styles';
-import { API_BASE_URL,POSTS_ENDPOINT,AUTH_ENDPOINT } from './constants';
+import axios from 'axios';
+import { API_BASE_URL } from '../constants/constants';
+import CustomEventEmitter from '../utils/CustomEventEmitter';
 interface AddPostButtonProps {
-  onPostAdded: () => void;
+  modalVisible: boolean;
+  setModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const AddPostButton: React.FC<AddPostButtonProps> = ({ onPostAdded }) => {
-  const [modalVisible, setModalVisible] = useState(false);
-  const [imageUri, setImageUri] = useState<string | null>(null);
+const AddPostButton: React.FC<AddPostButtonProps> = ({ modalVisible, setModalVisible }) => {
   const [caption, setCaption] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [imageUri, setImageUri] = useState<string | null>(null);
 
-  const pickImage = async () => {
+  const pickImageFromGallery = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       quality: 1,
     });
-
     if (!result.canceled) {
       setImageUri(result.assets[0].uri);
     }
   };
-
+  
+// config perfmisos apple
   const takePhoto = async () => {
     const result = await ImagePicker.launchCameraAsync({
       allowsEditing: true,
       quality: 1,
     });
-
     if (!result.canceled) {
       setImageUri(result.assets[0].uri);
     }
   };
 
   const handleUpload = async () => {
-    if (!imageUri || !caption) {
-      Alert.alert('Error', 'Por favor selecciona una imagen y añade un caption.');
+    const token = await AsyncStorage.getItem('token');
+    if (!token || !imageUri) {
+      Alert.alert('Error', 'Asegúrate de iniciar sesión y seleccionar una imagen.');
       return;
     }
 
-    setLoading(true);
+    const formData = new FormData();
+    formData.append('image', {
+      uri: imageUri,
+      name: 'photo.jpg',
+      type: 'image/jpeg',
+    } as any);
+    formData.append('caption', caption);
 
     try {
-      const userId = await AsyncStorage.getItem('userId');
-      const token = await AsyncStorage.getItem('token');
-      if (!userId || !token) {
-        Alert.alert('Error', 'No se encontró el usuario o el token. Inicia sesión nuevamente.');
-        setLoading(false);
-        return;
-      }
-
-      const formData = new FormData();
-      formData.append('image', {
-        uri: imageUri,
-        type: 'image/jpeg',
-        name: 'photo.jpg',
-      } as any);
-
-      formData.append('user', userId);
-      formData.append('caption', caption);
-
-      const response = await fetch(`${POSTS_ENDPOINT}/upload`, {
-        method: 'POST',
-        body: formData,
+      await axios.post(`${API_BASE_URL}/api/posts/upload`, formData, {
         headers: {
-          'Content-Type': 'multipart/form-data',
           Authorization: `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data',
         },
       });
-
-      if (response.ok) {
-        Alert.alert('Publicación subida', 'Tu publicación ha sido subida correctamente.');
-        onPostAdded();
-        setModalVisible(false);
-        setImageUri(null);
-        setCaption('');
-      } else {
-        const errorText = await response.text();
-        console.error('Error al subir el post:', errorText);
-        Alert.alert('Error', 'Ocurrió un error al subir la publicación.');
-      }
+      CustomEventEmitter.emit('refreshFeed'); // Emitimos el evento para actualizar el feed
+      setModalVisible(false);
+      setImageUri(null);
+      setCaption('');
+      Alert.alert('Publicación subida', 'Tu publicación se ha subido exitosamente.');
     } catch (error) {
-      console.error('Error al subir el post:', error);
-      Alert.alert('Error', 'Ocurrió un error al subir la publicación.');
+      console.error('Error al subir la publicación:', error);
+      Alert.alert('Error', 'No se pudo subir la publicación.');
     }
-
-    setLoading(false);
   };
 
   return (
-    <>
-      <Button title="+" onPress={() => setModalVisible(true)} />
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => setModalVisible(false)}
-      >
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Agregar Publicación</Text>
-
-            {imageUri ? (
-              <Text>Imagen seleccionada</Text>
-            ) : (
-              <View style={styles.imagePickerButtons}>
-                <Button title="Elegir de la galería" onPress={pickImage} />
-                <Button title="Tomar foto" onPress={takePhoto} />
-              </View>
-            )}
-
+    <View>
+      <Modal visible={modalVisible} transparent>
+        <View style={modalStyles.modalContainer}>
+          <View style={modalStyles.modalContent}>
+            <Text style={modalStyles.title}>Nueva Publicación</Text>
+            <View style={modalStyles.imagePreviewContainer}>
+              {imageUri ? (
+                <Image source={{ uri: imageUri }} style={modalStyles.imagePreview} />
+              ) : (
+                <Text style={modalStyles.imagePlaceholder}>Imagen de previsualización</Text>
+              )}
+            </View>
             <TextInput
-              placeholder="Caption"
+              placeholder="Descripción"
               value={caption}
               onChangeText={setCaption}
-              style={styles.input}
+              style={modalStyles.input}
             />
-
-            <Button title={loading ? 'Subiendo...' : 'Subir publicación'} onPress={handleUpload} disabled={loading} />
-            <Button title="Cerrar" onPress={() => setModalVisible(false)} />
+            <View style={modalStyles.buttonRow}>
+              <TouchableOpacity onPress={pickImageFromGallery} style={modalStyles.galleryButton}>
+                <Text style={modalStyles.buttonText}>Galería</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={takePhoto} style={modalStyles.cameraButton}>
+                <Text style={modalStyles.buttonText}>Cámara</Text>
+              </TouchableOpacity>
+            </View>
+            <TouchableOpacity onPress={handleUpload} style={modalStyles.uploadButton}>
+              <Text style={modalStyles.uploadButtonText}>Subir</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => setModalVisible(false)} style={modalStyles.cancelButton}>
+              <Text style={modalStyles.cancelButtonText}>Cancelar</Text>
+            </TouchableOpacity>
           </View>
         </View>
       </Modal>
-    </>
+    </View>
   );
 };
+
+const modalStyles = StyleSheet.create({
+  modalContainer: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    width: '85%',
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    padding: 20,
+    alignItems: 'center',
+  },
+  title: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  imagePreviewContainer: {
+    width: '100%',
+    height: 200,
+    backgroundColor: '#e0e0e0',
+    borderRadius: 10,
+    marginBottom: 15,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  imagePreview: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 10,
+  },
+  imagePlaceholder: {
+    color: '#888',
+    fontSize: 14,
+  },
+  input: {
+    width: '100%',
+    height: 40,
+    borderColor: '#ddd',
+    borderWidth: 1,
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    marginBottom: 15,
+  },
+  buttonRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+    marginBottom: 10,
+  },
+  galleryButton: {
+    flex: 1,
+    backgroundColor: '#007bff',
+    paddingVertical: 10,
+    marginRight: 5,
+    borderRadius: 5,
+    alignItems: 'center',
+  },
+  cameraButton: {
+    flex: 1,
+    backgroundColor: '#007bff',
+    paddingVertical: 10,
+    marginLeft: 5,
+    borderRadius: 5,
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 16,
+  },
+  uploadButton: {
+    width: '100%',
+    backgroundColor: '#28a745',
+    paddingVertical: 12,
+    borderRadius: 5,
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  uploadButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  cancelButton: {
+    width: '100%',
+    backgroundColor: '#dc3545',
+    paddingVertical: 12,
+    borderRadius: 5,
+    alignItems: 'center',
+  },
+  cancelButtonText: {
+    color: '#fff',
+    fontSize: 16,
+  },
+});
 
 export default AddPostButton;

@@ -2,8 +2,10 @@
   "expo": {
     "name": "Fakestagram",
     "slug": "fakestagram",
+    "scheme": "your-app-scheme",
     "version": "1.0.0",
     "orientation": "portrait",
+    "entryPoint": "./index.ts",
     "icon": "./assets/icon.png",
     "splash": {
       "image": "./assets/splash.png",

@@ -1,9 +1,38 @@
 import { StyleSheet, Dimensions } from 'react-native';
 
-// Obtenemos las dimensiones de la pantalla
-const { width } = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
+  addPostButtonCenter: {
+    position: 'absolute',
+    bottom: height * 0.1,
+    alignSelf: 'center',
+    backgroundColor: '#007bff',
+    borderRadius: 30,
+    width: 60,
+    height: 60,
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 1000, 
+  },
+  addPostButtonText: {
+    color: '#fff',
+    fontSize: 24,
+    fontWeight: 'bold',
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContent: {
+    width: 300,
+    padding: 20,
+    backgroundColor: 'white',
+    borderRadius: 10,
+    alignItems: 'center',
+  },
   container: {
     flex: 1,
     justifyContent: 'center',
@@ -56,15 +85,15 @@ const styles = StyleSheet.create({
     color: '#007bff',
     textDecorationLine: 'underline',
   },
-  // Estilos para la pantalla de Feed y posts
   feedContainer: {
     flex: 1,
-    padding: 16,
-    alignItems: 'center', // Centrar los elementos
+    paddingVertical: 10,
+    alignItems: 'center',
+    width: '100%',
   },
   feedContent: {
     width: '100%',
-    maxWidth: 600, // Definir un ancho máximo para el contenido
+    maxWidth: 600,
     alignSelf: 'center',
   },
   feedTitle: {
@@ -75,42 +104,20 @@ const styles = StyleSheet.create({
   postContainer: {
     marginBottom: 20,
     width: '100%',
+    alignItems: 'center',
   },
   postImage: {
-    width: '100%', // Mantener el ancho al 100% del contenedor padre
-    height: 600, // Ajustar la altura según lo necesario
+    width: width * 0.95,
+    height: width * 0.95,
     borderRadius: 10,
+    resizeMode: 'cover',
   },
   postCaption: {
     fontSize: 16,
     marginTop: 8,
-  },
-  addPostButton: {
-    position: 'absolute',  // Hacer que el botón esté en una posición absoluta
-    bottom: 15,            // Ajusta el valor según lo que necesites para bajarlo
-    right: 20,             // Ajusta la posición horizontal si es necesario
-    backgroundColor: '#007bff',
-    borderRadius: 50,
-    width: 60,             // Ajusta el tamaño del botón
-    height: 50,            // Ajusta el tamaño del botón
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  addPostButtonText: {
-    color: '#fff',
-    fontSize: 40,          // Ajusta el tamaño del texto "+" si es necesario
-  },
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
-  modalContent: {
-    width: 300,
-    padding: 20,
-    backgroundColor: 'white',
-    borderRadius: 10,
+    paddingHorizontal: 10,
+    textAlign: 'left', 
+    width: '100%',
   },
   modalTitle: {
     fontSize: 18,
@@ -125,6 +132,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 10,
+    width: '100%',
+    paddingHorizontal: 10,
   },
   profileImage: {
     width: 40,
@@ -138,6 +147,8 @@ const styles = StyleSheet.create({
   },
   postFooter: {
     marginTop: 10,
+    paddingHorizontal: 10,
+    width: '100%',
   },
   likesText: {
     fontWeight: 'bold',
@@ -149,6 +160,7 @@ const styles = StyleSheet.create({
   },
   postInfo: {
     padding: 10,
+    width: '100%',
   },
   likes: {
     fontWeight: 'bold',
@@ -162,9 +174,92 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   userInfo: {
+    width: '100%',
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 10,
+  },
+  flatListContentContainer: {
+    alignItems: 'center',
+    paddingBottom: 100,
+  },
+  addPostButton: {
+    position: 'absolute',
+    bottom: 20,
+    right: 20,
+    backgroundColor: '#007bff',
+    borderRadius: 30,
+    width: 60,
+    height: 60,
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 1000,
+  },  
+  loginContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#ffffff',
+  },
+  loginLogo: {
+    width: 100,
+    height: 100,
+    marginBottom: 20,
+  },
+  loginAppTitle: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: '#C13584',
+    marginBottom: 30,
+    textTransform: 'uppercase',
+  },
+  loginInputContainer: {
+    width: '85%',
+    marginBottom: 20,
+  },
+  loginInput: {
+    width: '100%',
+    padding: 12,
+    borderRadius: 8,
+    backgroundColor: '#f0f0f0',
+    marginBottom: 10,
+    fontSize: 16,
+  },
+  loginButton: {
+    width: '85%',
+    padding: 15,
+    backgroundColor: '#C13584',
+    borderRadius: 8,
+    alignItems: 'center',
+    marginTop: 20,
+  },
+  loginButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  loginLink: {
+    marginTop: 20,
+    fontSize: 16,
+    color: '#C13584',
+  },
+  loginCreateAccountText: {
+    color: '#888',
+    marginTop: 10,
+    fontSize: 14,
+  },
+  addPostButtonTopRight: {
+    position: 'absolute',
+    top: -50,
+    right: -400,
+    backgroundColor: '#007bff',
+    borderRadius: 30,
+    width: 50,
+    height: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 100,
+    elevation: 10,
   },
 });
 

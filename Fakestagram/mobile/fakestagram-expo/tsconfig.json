@@ -15,7 +15,7 @@
   "include": [
     "./components",
     "./styles"
-,  ],
+, "constants/constants.tsx",  ],
   "exclude": [
     "**/__mocks__/*",
     "**/__tests__/*",
