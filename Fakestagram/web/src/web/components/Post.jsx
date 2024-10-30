@@ -1,13 +1,56 @@
-import React from 'react';
-import { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import '@web/components/css/Post.css';
+import { POSTS_ENDPOINT } from '../components/Constants';
 
-function Post({ username, profileImageUrl, postTime, imageUrl, description, profileView = false }) {
+function Post({ postId, username, profileImageUrl, postTime, imageUrl, description, likes, profileView = false }) {
   const [hasLikes, setHasLikes] = useState(false);
+  const [likesCount, setLikesCount] = useState(likes.length);
 
-  function handleLike(){
-    setHasLikes(!hasLikes);
-  }
+  useEffect(() => {
+    const userId = localStorage.getItem('userId');
+    if (likes.includes(userId)) {
+      setHasLikes(true);
+    }
+  }, [likes]);
+
+  const handleLike = async () => {
+    try {
+      const token = localStorage.token;
+      if (!token) {
+        alert('No se encontró el token. Inicia sesión nuevamente.');
+        return;
+      }
+
+      const response = await axios.post(`${POSTS_ENDPOINT}/${postId}/like`, {}, {
+        headers: { "Authorization": `Bearer ${token}` }
+      });
+
+      setHasLikes(true);
+      setLikesCount(response.data.likes.length);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleUnlike = async () => {
+    try {
+      const token = localStorage.token;
+      if (!token) {
+        alert('No se encontró el token. Inicia sesión nuevamente.');
+        return;
+      }
+
+      const response = await axios.post(`${POSTS_ENDPOINT}/${postId}/unlike`, {}, {
+        headers: { "Authorization": `Bearer ${token}` }
+      });
+
+      setHasLikes(false);
+      setLikesCount(response.data.likes.length);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <div className={`box ${profileView ? 'profile-view' : 'feed-view'}`}>
@@ -34,12 +77,14 @@ function Post({ username, profileImageUrl, postTime, imageUrl, description, prof
         <img src={imageUrl} alt="Post" className="post-image" />
       </div>
 
-      {/* Likes y comentarios*/}
+      {/* Likes y comentarios */}
       {!profileView &&
         <div>
           <div className="content-vertical">
-            <button onClick={handleLike}>{hasLikes ? <i class="fa-solid fa-heart"></i> : <i class="fa-regular fa-heart"></i>}</button>
-            <small>32 Likes</small>
+            <button onClick={hasLikes ? handleUnlike : handleLike}>
+              {hasLikes ? <i className="fa-solid fa-heart"></i> : <i className="fa-regular fa-heart"></i>}
+            </button>
+            <small>{likesCount} Likes</small>
           </div>
         </div>
       }

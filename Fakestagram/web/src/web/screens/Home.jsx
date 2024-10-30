@@ -10,7 +10,7 @@ const fetchPosts = async () => {
     const token = localStorage.token;
 
     if (!token) {
-      return;
+      return [];
     }
 
     const response = await axios.get(`${FEED_ENDPOINT}`, {
@@ -20,6 +20,7 @@ const fetchPosts = async () => {
     return response.data;
   } catch (error) {
     console.log(error);
+    return [];
   }
 };
 
@@ -29,7 +30,7 @@ function Home() {
   useEffect(() => {
     const getPosts = async () => {
       const data = await fetchPosts();
-      setPosts(data);
+      setPosts(Array.isArray(data) ? data : []);
     };
     getPosts();
   }, []);
@@ -41,12 +42,14 @@ function Home() {
         <div>
           {posts.map((post) => (
             <Post
-              key={post.id}
+              key={post._id} // Asegúrate de que cada Post tenga una key única
+              postId={post._id} // Pasa el postId correctamente
               username={post.user?.username || 'Usuario desconocido'}
               profileImageUrl={post.user?.profilePicture || 'defaultProfileImageUrl'}
               postTime={post.createdAt}
               imageUrl={post.imageUrl}
               description={post.caption}
+              likes={post.likes} // Pasa la información de los likes
               profileView={false}
             />
           ))}

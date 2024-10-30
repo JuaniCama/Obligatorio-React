@@ -112,7 +112,12 @@ function Profile() {
         {profile.posts?.map(post => (
           <Post
             key={post._id} // Asegúrate de que cada Post tenga una key única
+            postId={post._id} // Pasa el postId correctamente
+            username={post.user?.username || 'Usuario desconocido'}
+            profileImageUrl={post.user?.profilePicture || 'defaultProfileImageUrl'}
+            postTime={post.createdAt}
             imageUrl={post.imageUrl}
+            description={post.caption}
             profileView={true}
           />
         ))}
