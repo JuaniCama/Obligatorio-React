@@ -3,7 +3,7 @@ import axios from 'axios';
 import '@web/components/css/Post.css';
 import { POSTS_ENDPOINT } from '../components/Constants';
 
-function Post({ postId, username, profileImageUrl, postTime, imageUrl, description, likes, profileView = false }) {
+function Post({ postId, username, profileImageUrl, postTime, imageUrl, description, likes = [], profileView = false }) {
   const [hasLikes, setHasLikes] = useState(false);
   const [likesCount, setLikesCount] = useState(likes.length);
 
@@ -21,11 +21,9 @@ function Post({ postId, username, profileImageUrl, postTime, imageUrl, descripti
         alert('No se encontró el token. Inicia sesión nuevamente.');
         return;
       }
-
       const response = await axios.post(`${POSTS_ENDPOINT}/${postId}/like`, {}, {
         headers: { "Authorization": `Bearer ${token}` }
       });
-
       setHasLikes(true);
       setLikesCount(response.data.likes.length);
     } catch (error) {
@@ -40,11 +38,9 @@ function Post({ postId, username, profileImageUrl, postTime, imageUrl, descripti
         alert('No se encontró el token. Inicia sesión nuevamente.');
         return;
       }
-
-      const response = await axios.post(`${POSTS_ENDPOINT}/${postId}/unlike`, {}, {
+      const response = await axios.delete(`${POSTS_ENDPOINT}/${postId}/like`, {
         headers: { "Authorization": `Bearer ${token}` }
       });
-
       setHasLikes(false);
       setLikesCount(response.data.likes.length);
     } catch (error) {
@@ -70,13 +66,12 @@ function Post({ postId, username, profileImageUrl, postTime, imageUrl, descripti
               </div>
             </div>
           </article>
-        )}
-
+        )
+      }
       {/* Imagen del post */}
       <div className={`image ${profileView ? 'is-square' : 'is-4by3'}`}>
         <img src={imageUrl} alt="Post" className="post-image" />
       </div>
-
       {/* Likes y comentarios */}
       {!profileView &&
         <div>

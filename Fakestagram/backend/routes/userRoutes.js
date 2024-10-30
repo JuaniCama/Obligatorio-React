@@ -5,6 +5,7 @@ const {
   getAllUsers,
   addFriend,
   updateUserProfile,
+  removeFriend,
 } = require("../controllers/userController");
 const { protect } = require("../middlewares/authMiddleware");
 
@@ -177,6 +178,39 @@ router.post("/add-friend/:friendId", protect, addFriend);
  *         description: Error del servidor
  */
 router.put("/profile/edit", protect, updateUserProfile);
+
+/**
+ * @swagger
+ * /api/user/remove-friend/{friendId}:
+ *   delete:
+ *     summary: Eliminar un amigo
+ *     tags: [Usuarios]
+ *     parameters:
+ *       - in: path
+ *         name: friendId
+ *         required: true
+ *         description: ID del usuario a eliminar de la lista de amigos
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Amigo eliminado correctamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Amigo eliminado correctamente"
+ *       400:
+ *         description: El usuario no es tu amigo
+ *       404:
+ *         description: Usuario no encontrado
+ *       500:
+ *         description: Error del servidor
+ */
+router.delete("/remove-friend/:friendId", protect, removeFriend);
 
 module.exports = router;
 
