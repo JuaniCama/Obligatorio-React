@@ -5,16 +5,16 @@ function Sidebar({ onNavigate }) {
         <aside className="sidebar">
             <ul>
                 <li>
-                    <i class="fa-solid fa-house icono">  </i>
+                    <i className="fa-solid fa-house icono">  </i>
                     <a onClick={() => onNavigate('home')}>Home</a>
                 </li>
                 <li>
-                    <i class="fa-solid fa-heart icono"> </i>
+                    <i className="fa-solid fa-heart icono"> </i>
 
                     <a onClick={() => onNavigate('notifications')}>Notifications</a>
                 </li>
                 <li>
-                    <i class="fa-solid fa-user icono"> </i>
+                    <i className="fa-solid fa-user icono"> </i>
 
                     <a onClick={() => onNavigate('profile')}>Profile</a>
                 </li>

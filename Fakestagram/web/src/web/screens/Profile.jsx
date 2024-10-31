@@ -47,6 +47,7 @@ function Profile() {
   const [isEditing, setIsEditing] = useState(false);
   const [username, setUsername] = useState('');
   const [profilePicture, setProfilePicture] = useState('');
+  const [email, setEmail] = useState('');
 
   useEffect(() => {
     const getProfile = async () => {
@@ -55,15 +56,19 @@ function Profile() {
         setProfile(data);
         setUsername(data.user?.username || '');
         setProfilePicture(data.user?.profilePicture || '');
+        setEmail(data.user?.email || '');
       }
     };
     getProfile();
   }, []);
 
   const handleEdit = async () => {
-    const updatedProfile = await updateProfile({ username, profilePicture });
-    setProfile(updatedProfile);
-    setIsEditing(false);
+    const updatedProfile = await updateProfile({ username, profilePicture, email });
+    if (updatedProfile) {
+      const data = await fetchProfile(); // Vuelve a obtener los datos del perfil
+      setProfile(data); // Actualiza el estado del perfil con los datos más recientes
+      setIsEditing(false);
+    }
   };
 
   return (
@@ -82,14 +87,16 @@ function Profile() {
                   type="text"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
+                  className="profile-input"
                 />
                 <input
                   type="text"
                   value={profilePicture}
                   onChange={(e) => setProfilePicture(e.target.value)}
+                  className="profile-input"
                 />
-                <button onClick={handleEdit}>Save</button>
-                <button onClick={() => setIsEditing(false)}>Cancel</button>
+                <button onClick={handleEdit} className="profile-btn save-btn">Save</button>
+                <button onClick={() => setIsEditing(false)} className="profile-btn cancel-btn">Cancel</button>
               </>
             ) : (
               <>

@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import '@web/components/css/Post.css';
 import { POSTS_ENDPOINT } from '../components/Constants';
 
-function Post({ postId, username, profileImageUrl, postTime, imageUrl, description, likes = [], profileView = false }) {
+function Post({ postId, userId, username, profileImageUrl, postTime, imageUrl, description, likes = [], profileView = false }) {
   const [hasLikes, setHasLikes] = useState(false);
   const [likesCount, setLikesCount] = useState(likes.length);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const userId = localStorage.getItem('userId');
@@ -48,31 +50,30 @@ function Post({ postId, username, profileImageUrl, postTime, imageUrl, descripti
     }
   };
 
+  const handleUsernameClick = () => {
+    navigate(`/userProfile/${userId}`);
+  };
+
   return (
     <div className={`box ${profileView ? 'profile-view' : 'feed-view'}`}>
-      {/* Solo muestra el header si no está en la vista de perfil */}
-      {
-        !profileView && (
-          <article className="media">
-            <figure className="media-left">
-              <p className="image is-64x64 profile-image-container">
-                <img src={profileImageUrl} alt={`${username}'s profile`} className="profile-image" />
-              </p>
-            </figure>
-            <div className="media-content">
-              <div className="content-vertical">
-                <strong>{username}</strong> <small>• {postTime}</small>
-                <p>{description}</p>
-              </div>
+      {!profileView && (
+        <article className="media">
+          <figure className="media-left">
+            <p className="image is-64x64 profile-image-container">
+              <img src={profileImageUrl} alt={`${username}'s profile`} className="profile-image" />
+            </p>
+          </figure>
+          <div className="media-content">
+            <div className="content-vertical">
+              <strong onClick={handleUsernameClick} style={{ cursor: 'pointer' }}>{username}</strong> <small>• {postTime}</small>
+              <p>{description}</p>
             </div>
-          </article>
-        )
-      }
-      {/* Imagen del post */}
+          </div>
+        </article>
+      )}
       <div className={`image ${profileView ? 'is-square' : 'is-4by3'}`}>
         <img src={imageUrl} alt="Post" className="post-image" />
       </div>
-      {/* Likes y comentarios */}
       {!profileView &&
         <div>
           <div className="content-vertical">

@@ -24,7 +24,7 @@ const fetchPosts = async () => {
   }
 };
 
-function Home() {
+function Home({ onNavigate }) {
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
@@ -44,6 +44,7 @@ function Home() {
             <Post
               key={post._id} // Asegúrate de que cada Post tenga una key única
               postId={post._id} // Pasa el postId correctamente
+              userId={post.user?._id} // Pasa el userId correctamente
               username={post.user?.username || 'Usuario desconocido'}
               profileImageUrl={post.user?.profilePicture || 'defaultProfileImageUrl'}
               postTime={post.createdAt}
@@ -51,6 +52,7 @@ function Home() {
               description={post.caption}
               likes={post.likes} // Pasa la información de los likes
               profileView={false}
+              onNavigate={onNavigate} // Pasa la función onNavigate
             />
           ))}
         </div>
