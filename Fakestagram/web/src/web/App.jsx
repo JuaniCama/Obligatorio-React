@@ -79,10 +79,12 @@ function App() {
             onNavigate={handleNavigate}
           />
         )}
-        {token && <Sidebar onNavigate={handleNavigate} />} {/* Renderiza Sidebar solo si hay token */}
+        {token && <Sidebar />} {/* Renderiza Sidebar solo si hay token */}
         <div className="content">
           <Routes>
-            <Route path="/" element={renderScreen()} />
+            <Route path="/" element={<Home onNavigate={handleNavigate} />} />
+            <Route path="/notifications" element={<Notifications />} />
+            <Route path="/profile" element={<Profile />} />
             <Route path="/userProfile/:userId" element={<UserProfile />} />
           </Routes>
         </div>
