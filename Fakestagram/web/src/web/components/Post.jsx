@@ -54,6 +54,29 @@ function Post({ postId, userId, username, profileImageUrl, postTime, imageUrl, d
     navigate(`/userProfile/${userId}`);
   };
 
+  const [comment, setComment] = useState('');
+  const handleNewComment = async () => {
+    try {
+      const token = localStorage.token;
+      if (!token) {
+        alert('No se encontró el token. Inicia sesión nuevamente.');
+        return;
+      }
+      const response = await axios.post(`${POSTS_ENDPOINT}/${postId}/comments`,
+        {
+          content: comment,
+        }, {
+        headers: { "Authorization": `Bearer ${token}` },
+      });
+
+      setComment('');
+      return response.data;
+    } catch (error) {
+      console.log(error);
+      return;
+    }
+  }
+
   return (
     <div className={`box ${profileView ? 'profile-view' : 'feed-view'}`}>
       {!profileView && (
@@ -81,6 +104,26 @@ function Post({ postId, userId, username, profileImageUrl, postTime, imageUrl, d
               {hasLikes ? <i className="fa-solid fa-heart"></i> : <i className="fa-regular fa-heart"></i>}
             </button>
             <small>{likesCount} Likes</small>
+          </div>
+
+          {/* Comentarios */}
+          <div className="content-vertical">
+            <p>Comentarios:</p>
+            <div class='field is-grouped'>
+              <input
+                type='text'
+                className='input'
+                placeholder='Agrega un comentario...'
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    handleNewComment()
+                  }
+                }
+                }
+              />
+            </div>
           </div>
         </div>
       }
