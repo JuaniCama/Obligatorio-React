@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import '@web/components/css/Post.css';
-import { POSTS_ENDPOINT } from '../components/Constants';
+import { POSTS_ENDPOINT, COMMENTS_ENDPOINT } from '../components/Constants';
 
-function Post({ postId, userId, username, profileImageUrl, postTime, imageUrl, description, likes = [], profileView = false }) {
+function Post({ postId, userId, username, profileImageUrl, postTime, imageUrl, description, likes = [], commentsIDs = [], profileView = false }) {
   const [hasLikes, setHasLikes] = useState(false);
   const [likesCount, setLikesCount] = useState(likes.length);
   const navigate = useNavigate();
@@ -77,6 +77,38 @@ function Post({ postId, userId, username, profileImageUrl, postTime, imageUrl, d
     }
   }
 
+  const fetchComments = async (commentsIDs) => {
+    try {
+      const token = localStorage.token;
+      if (!token) {
+        alert('No se encontró el token. Inicia sesión nuevamente.');
+        return;
+      }
+
+      // Promise.all permite hacer todas las llamadas en paralelo
+      const responses = await Promise.all(
+        commentsIDs.map((commentID) => axios.get(`${COMMENTS_ENDPOINT}/${commentID}`, {
+          headers: { "Authorization": `Bearer ${token}` }
+        }))
+      )
+
+      return responses.map((response) => response.data);
+    } catch (error) {
+      console.log(error);
+      return [];
+    }
+  }
+
+  const [comments, setComments] = useState([]);
+  useEffect(() => {
+    const fetchCommentsData = async () => {
+      const result = await fetchComments(commentsIDs);
+      setComments(result);
+    }
+
+    fetchCommentsData();
+  }, [commentsIDs])
+
   return (
     <div className={`box ${profileView ? 'profile-view' : 'feed-view'}`}>
       {!profileView && (
@@ -107,9 +139,16 @@ function Post({ postId, userId, username, profileImageUrl, postTime, imageUrl, d
           </div>
 
           {/* Comentarios */}
-          <div className="content-vertical">
-            <p>Comentarios:</p>
-            <div class='field is-grouped'>
+          <div className="content-vertical m-3">
+            <p className="subtitle is-6 m-0">Comentarios:</p>
+            <div>
+              {comments.map((commentContent) => (
+                <div className="field is-grouped m-1" key={commentContent._id}>
+                  <p><b>{commentContent.user.username}</b> {commentContent.content}</p>
+                </div>
+              ))}
+            </div>
+            <div className='field is-grouped'>
               <input
                 type='text'
                 className='input'
