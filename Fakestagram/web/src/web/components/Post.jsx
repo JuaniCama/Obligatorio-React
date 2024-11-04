@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import '@web/components/css/Post.css';
-import { POSTS_ENDPOINT, COMMENTS_ENDPOINT } from '../components/Constants';
+import { API_BASE_URL, POSTS_ENDPOINT, COMMENTS_ENDPOINT } from '../components/Constants';
 
 function Post({ postId, userId, username, profileImageUrl, postTime, imageUrl, description, likes = [], commentsIDs = [], profileView = false }) {
   const [hasLikes, setHasLikes] = useState(false);
@@ -127,7 +127,7 @@ function Post({ postId, userId, username, profileImageUrl, postTime, imageUrl, d
         </article>
       )}
       <div className={`image ${profileView ? 'is-square' : 'is-4by3'}`}>
-        <img src={imageUrl} alt="Post" className="post-image" />
+        <img src={`${API_BASE_URL}/${imageUrl}`} alt="Post" className="post-image" />
       </div>
       {!profileView &&
         <div>
