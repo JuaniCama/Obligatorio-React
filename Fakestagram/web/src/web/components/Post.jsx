@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
 import '@web/components/css/Post.css';
 import { API_BASE_URL, POSTS_ENDPOINT, COMMENTS_ENDPOINT } from '../components/Constants';
 
-function Post({ postId, userId, username, profileImageUrl, postTime, imageUrl, description, likes = [], commentsIDs = [], profileView = false }) {
+function Post({ postId, userId, username, profileImageUrl, postTime, imageUrl, description, likes = [], commentsIDs = [], profileView = false, onNavigate }) {
   const [hasLikes, setHasLikes] = useState(false);
   const [likesCount, setLikesCount] = useState(likes.length);
-  const navigate = useNavigate();
+  const [comments, setComments] = useState([]);
+  const [comment, setComment] = useState('');
 
   useEffect(() => {
     const userId = localStorage.getItem('userId');
@@ -15,6 +15,14 @@ function Post({ postId, userId, username, profileImageUrl, postTime, imageUrl, d
       setHasLikes(true);
     }
   }, [likes]);
+
+  useEffect(() => {
+    const fetchCommentsData = async () => {
+      const result = await fetchComments(commentsIDs);
+      setComments(result);
+    }
+    fetchCommentsData();
+  }, [commentsIDs]);
 
   const handleLike = async () => {
     try {
@@ -51,10 +59,9 @@ function Post({ postId, userId, username, profileImageUrl, postTime, imageUrl, d
   };
 
   const handleUsernameClick = () => {
-    navigate(`/userProfile/${userId}`);
+    onNavigate('userProfile', userId);
   };
 
-  const [comment, setComment] = useState('');
   const handleNewComment = async () => {
     try {
       const token = localStorage.token;
@@ -66,16 +73,14 @@ function Post({ postId, userId, username, profileImageUrl, postTime, imageUrl, d
         {
           content: comment,
         }, {
-        headers: { "Authorization": `Bearer ${token}` },
-      });
-
+          headers: { "Authorization": `Bearer ${token}` }
+        });
       setComment('');
-      return response.data;
+      setComments([...comments, response.data]);
     } catch (error) {
       console.log(error);
-      return;
     }
-  }
+  };
 
   const fetchComments = async (commentsIDs) => {
     try {
@@ -84,30 +89,18 @@ function Post({ postId, userId, username, profileImageUrl, postTime, imageUrl, d
         alert('No se encontró el token. Inicia sesión nuevamente.');
         return;
       }
-
       // Promise.all permite hacer todas las llamadas en paralelo
       const responses = await Promise.all(
         commentsIDs.map((commentID) => axios.get(`${COMMENTS_ENDPOINT}/${commentID}`, {
           headers: { "Authorization": `Bearer ${token}` }
         }))
       )
-
       return responses.map((response) => response.data);
     } catch (error) {
       console.log(error);
       return [];
     }
   }
-
-  const [comments, setComments] = useState([]);
-  useEffect(() => {
-    const fetchCommentsData = async () => {
-      const result = await fetchComments(commentsIDs);
-      setComments(result);
-    }
-
-    fetchCommentsData();
-  }, [commentsIDs])
 
   return (
     <div className={`box ${profileView ? 'profile-view' : 'feed-view'}`}>
@@ -137,7 +130,6 @@ function Post({ postId, userId, username, profileImageUrl, postTime, imageUrl, d
             </button>
             <small>{likesCount} Likes</small>
           </div>
-
           {/* Comentarios */}
           <div className="content-vertical m-3">
             <p className="subtitle is-6 m-0">Comentarios:</p>
@@ -159,8 +151,7 @@ function Post({ postId, userId, username, profileImageUrl, postTime, imageUrl, d
                   if (e.key === 'Enter') {
                     handleNewComment()
                   }
-                }
-                }
+                }}
               />
             </div>
           </div>

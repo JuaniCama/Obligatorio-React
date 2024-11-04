@@ -1,23 +1,20 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
 
-function Sidebar() {
-  const navigate = useNavigate();
-
+function Sidebar({ onNavigate }) {
   return (
     <aside className="sidebar">
       <ul>
         <li>
-          <i className="fa-solid fa-house icono" onClick={() => navigate('/')}></i>
-          <a onClick={() => navigate('/')}>Home</a>
+          <i className="fa-solid fa-house icono" onClick={() => onNavigate('home')}></i>
+          <a onClick={() => onNavigate('home')}>Home</a>
         </li>
         <li>
-          <i className="fa-solid fa-heart icono" onClick={() => navigate('/notifications')}></i>
-          <a onClick={() => navigate('/notifications')}>Notifications</a>
+          <i className="fa-solid fa-heart icono" onClick={() => onNavigate('notifications')}></i>
+          <a onClick={() => onNavigate('notifications')}>Notifications</a>
         </li>
         <li>
-          <i className="fa-solid fa-user icono" onClick={() => navigate('/profile')}></i>
-          <a onClick={() => navigate('/profile')}>Profile</a>
+          <i className="fa-solid fa-user icono" onClick={() => onNavigate('profile')}></i>
+          <a onClick={() => onNavigate('profile')}>Profile</a>
         </li>
       </ul>
     </aside>
