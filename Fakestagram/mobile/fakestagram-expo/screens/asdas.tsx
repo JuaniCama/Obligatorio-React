@@ -17,7 +17,6 @@ const ProfileScreen = () => {
   const [username, setUsername] = useState('');
   const [description, setDescription] = useState('');
   const [profilePicture, setProfilePicture] = useState('');
-  const [profilePictureUrl, setProfilePictureUrl] = useState('');
   const router = useRouter();
   const { userId: routeUserId } = useLocalSearchParams();
 
@@ -31,7 +30,7 @@ const ProfileScreen = () => {
     const perfilAVisitar = await AsyncStorage.getItem('perfilAVisitar');
     const isMyProfile = perfilAVisitar === null;
     setIsMyProfile(isMyProfile);
-    console.log(isMyProfile);
+    // console.log(isMyProfile);
   };
 
   const fetchProfileData = async () => {
@@ -40,10 +39,10 @@ const ProfileScreen = () => {
       const perfilAVisitar = await AsyncStorage.getItem('perfilAVisitar');
       let idToUse = perfilAVisitar && perfilAVisitar !== '' ? perfilAVisitar : routeUserId;
 
-      console.log('Token:', token);
-      console.log('Perfil a visitar:', perfilAVisitar);
-      console.log('Route User ID:', routeUserId);
-      console.log('ID to use:', idToUse);
+      // console.log('Token:', token);
+      // console.log('Perfil a visitar:', perfilAVisitar);
+      // console.log('Route User ID:', routeUserId);
+      // console.log('ID to use:', idToUse);
 
       if (!token) {
         Alert.alert('Error', 'No se encontró un token de autenticación.');
@@ -54,7 +53,7 @@ const ProfileScreen = () => {
         const userId = await AsyncStorage.getItem('userId');
         if (userId) {
           idToUse = userId;
-          console.log('Usando el ID del usuario actual:', idToUse);
+          // console.log('Usando el ID del usuario actual:', idToUse);
         } else {
           Alert.alert('Error', 'No se encontró un ID de usuario válido.');
           return;
@@ -78,7 +77,6 @@ const ProfileScreen = () => {
       setUsername(profileData.user.username);
       setDescription(profileData.user.description);
       setProfilePicture(profileData.user.profilePicture);
-      setProfilePictureUrl(profileData.user.profilePicture);
       setLoading(false);
       handleProfileTabPress(); // Llamar a handleProfileTabPress después de cargar el perfil
     } catch (error) {
@@ -89,28 +87,22 @@ const ProfileScreen = () => {
   };
 
   const uploadImage = async (uri) => {
-    try {
-      const formData = new FormData();
-      formData.append('image', {
-        uri,
-        name: 'profile.jpg',
-        type: 'image/jpeg',
-      });
+    const formData = new FormData();
+    formData.append('image', {
+      uri,
+      name: 'profile.jpg',
+      type: 'image/jpeg',
+    });
 
-      const token = await AsyncStorage.getItem('token');
-      const response = await axios.post(`${API_BASE_URL}/api/upload`, formData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'multipart/form-data',
-        },
-      });
+    const token = await AsyncStorage.getItem('token');
+    const response = await axios.post(`${API_BASE_URL}/api/upload`, formData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'multipart/form-data',
+      },
+    });
 
-      return response.data.imageUrl;
-    } catch (error) {
-      console.error('Error al subir la imagen:', error);
-      Alert.alert('Error', 'No se pudo subir la imagen.');
-      throw error;
-    }
+    return response.data.imageUrl;
   };
 
   const updateProfile = async () => {
@@ -121,19 +113,16 @@ const ProfileScreen = () => {
         return;
       }
 
-      console.log('Actualizando perfil con:', {
+      let profilePictureUrl = profilePicture;
+      if (profilePicture && profilePicture.startsWith('file://')) {
+        profilePictureUrl = await uploadImage(profilePicture);
+      }
+
+      const response = await axios.put(`${API_BASE_URL}/api/user/profile/edit`, {
         username,
         description,
         profilePicture: profilePictureUrl,
-      });
-
-      const body = {
-        username: username,
-        description: description,
-        profilePicture: profilePictureUrl,
-      }
-
-      const response = await axios.put(`${API_BASE_URL}/api/user/profile/edit`, body, {
+      }, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -144,7 +133,6 @@ const ProfileScreen = () => {
       }));
       setIsEditing(false);
       Alert.alert('Perfil actualizado', 'Tu perfil se ha actualizado exitosamente.');
-      fetchProfileData(); // Refrescar los datos del perfil después de la actualización
     } catch (error) {
       console.error('Error al actualizar el perfil:', error);
       Alert.alert('Error', 'No se pudo actualizar el perfil.');
@@ -152,20 +140,13 @@ const ProfileScreen = () => {
   };
 
   const pickImageFromGallery = async () => {
-    try {
-      const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        allowsEditing: true,
-        quality: 1,
-      });
-      if (!result.canceled) {
-        setProfilePicture(result.assets[0].uri);
-        const uploadedImageUrl = await uploadImage(result.assets[0].uri);
-        setProfilePictureUrl(uploadedImageUrl);
-      }
-    } catch (error) {
-      console.error('Error al seleccionar la imagen:', error);
-      Alert.alert('Error', 'No se pudo seleccionar la imagen.');
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      quality: 1,
+    });
+    if (!result.canceled) {
+      setProfilePicture(result.assets[0].uri);
     }
   };
 
@@ -199,15 +180,12 @@ const ProfileScreen = () => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Image
-          source={profilePicture ? { uri: profilePicture } : require('../assets/defaultProfile.png')}
-          style={styles.profileImage}
-        />
-        {isEditing && isMyProfile && (
-          <TouchableOpacity onPress={pickImageFromGallery} style={styles.changePhotoButton}>
-            <Text style={styles.changePhotoButtonText}>Cambiar Foto</Text>
-          </TouchableOpacity>
-        )}
+        <TouchableOpacity onPress={pickImageFromGallery}>
+          <Image
+            source={profilePicture ? { uri: profilePicture } : require('../assets/defaultProfile.png')}
+            style={styles.profileImage}
+          />
+        </TouchableOpacity>
         {isEditing ? (
           <>
             <TextInput
@@ -283,16 +261,6 @@ const styles = StyleSheet.create({
     height: 80,
     borderRadius: 40,
     marginBottom: 10,
-  },
-  changePhotoButton: {
-    backgroundColor: '#007bff',
-    paddingVertical: 6,
-    paddingHorizontal: 20,
-    borderRadius: 20,
-    marginBottom: 10,
-  },
-  changePhotoButtonText: {
-    color: '#fff',
   },
   username: {
     fontSize: 20,

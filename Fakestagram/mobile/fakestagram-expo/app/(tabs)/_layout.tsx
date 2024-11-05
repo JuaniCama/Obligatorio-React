@@ -1,16 +1,33 @@
-// _layout.tsx
 import { Tabs } from 'expo-router';
 import TabBarIcon from '../../components/navigation/TabBarIcon';
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import AddPostButton from '../../components/AddPostButton';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function Layout() {
   const [modalVisible, setModalVisible] = useState(false);
 
+  const handleProfileTabPress = async () => {
+    await AsyncStorage.removeItem('perfilAVisitar');
+    // console.log('Perfil a visitar eliminado');
+  };
+
   return (
     <View style={{ flex: 1 }}>
-      <Tabs>
+      <Tabs
+        screenOptions={{
+          tabBarStyle: {
+            backgroundColor: '#333',
+          },
+          tabBarActiveTintColor: '#fff',
+          tabBarInactiveTintColor: '#888',
+          headerStyle: {
+            backgroundColor: '#333',
+          },
+          headerTintColor: '#fff',
+        }}
+      >
         <Tabs.Screen
           name="index"
           options={{
@@ -24,10 +41,12 @@ export default function Layout() {
             tabBarIcon: ({ color }) => <TabBarIcon name="user" color={color} />,
             title: 'Profile',
           }}
+          listeners={{
+            tabPress: handleProfileTabPress,
+          }}
         />
       </Tabs>
 
-      {/* Botón flotante para abrir el modal */}
       <TouchableOpacity
         style={styles.addPostButton}
         onPress={() => setModalVisible(true)}
@@ -46,8 +65,8 @@ export default function Layout() {
 const styles = StyleSheet.create({
   addPostButton: {
     position: 'absolute',
-    top: 10,
-    right: 10,
+    bottom: 40,
+    left: '45%',
     backgroundColor: '#007bff',
     borderRadius: 30,
     width: 50,

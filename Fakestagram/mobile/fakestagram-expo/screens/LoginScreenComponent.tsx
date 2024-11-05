@@ -15,7 +15,7 @@ const LoginScreenComponent = () => {
     try {
       const response = await axios.post(`${AUTH_ENDPOINT}/login`, { email, password });
       await AsyncStorage.setItem('token', response.data.token);
-      await AsyncStorage.setItem('userId', response.data._id);
+      await AsyncStorage.setItem('userId', response.data._id); // Asegúrate de guardar el userId
       router.push('/(tabs)');
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -27,7 +27,6 @@ const LoginScreenComponent = () => {
       }
     }
   };
-  
 
   return (
     <View style={styles.loginContainer}>
@@ -58,8 +57,8 @@ const LoginScreenComponent = () => {
 
       <Text style={styles.loginCreateAccountText}>
         Don't have an account?{' '}
-        <Text onPress={() => router.push('/(auth)/register')} style={styles.loginLink}>
-          Create one here
+        <Text onPress={() => router.push('/(auth)/register')} style={styles.loginCreateAccountLink}>
+          Create one
         </Text>
       </Text>
     </View>

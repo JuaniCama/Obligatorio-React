@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Modal, TextInput, Alert, TouchableOpacity, Text, Image, StyleSheet } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { API_BASE_URL } from '../constants/constants';
 import CustomEventEmitter from '../utils/CustomEventEmitter';
+
 interface AddPostButtonProps {
   modalVisible: boolean;
   setModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
@@ -13,6 +14,15 @@ interface AddPostButtonProps {
 const AddPostButton: React.FC<AddPostButtonProps> = ({ modalVisible, setModalVisible }) => {
   const [caption, setCaption] = useState('');
   const [imageUri, setImageUri] = useState<string | null>(null);
+
+  useEffect(() => {
+    (async () => {
+      const { status } = await ImagePicker.requestCameraPermissionsAsync();
+      if (status !== 'granted') {
+        Alert.alert('Permiso denegado', 'Se requiere permiso para acceder a la cámara.');
+      }
+    })();
+  }, []);
 
   const pickImageFromGallery = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -24,9 +34,14 @@ const AddPostButton: React.FC<AddPostButtonProps> = ({ modalVisible, setModalVis
       setImageUri(result.assets[0].uri);
     }
   };
-  
-// config perfmisos apple
+
   const takePhoto = async () => {
+    const { status } = await ImagePicker.requestCameraPermissionsAsync();
+    if (status !== 'granted') {
+      Alert.alert('Permiso denegado', 'Se requiere permiso para acceder a la cámara.');
+      return;
+    }
+
     const result = await ImagePicker.launchCameraAsync({
       allowsEditing: true,
       quality: 1,
@@ -58,7 +73,7 @@ const AddPostButton: React.FC<AddPostButtonProps> = ({ modalVisible, setModalVis
           'Content-Type': 'multipart/form-data',
         },
       });
-      CustomEventEmitter.emit('refreshFeed'); // Emitimos el evento para actualizar el feed
+      CustomEventEmitter.emit('refresh');
       setModalVisible(false);
       setImageUri(null);
       setCaption('');

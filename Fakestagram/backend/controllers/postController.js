@@ -35,7 +35,6 @@ const getFeed = async (req, res) => {
     const posts = await Post.find()
       .sort({ createdAt: -1 })
       .populate("user", "username profilePicture");
-      console.log(posts)
     res.json(posts);
   } catch (error) {
     res.status(500).json({ message: error.message });

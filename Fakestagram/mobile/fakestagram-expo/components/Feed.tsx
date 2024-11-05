@@ -1,28 +1,23 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { View, Text, FlatList, Image, ActivityIndicator, Alert } from 'react-native';
+import React, { useState, useCallback, useEffect } from 'react';
+import { View, FlatList, ActivityIndicator, Alert, StyleSheet } from 'react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
-import styles from '../styles/styles';
-import { API_BASE_URL, POSTS_ENDPOINT } from '../constants/constants';
+import Post from '../components/Post';
+import { POSTS_ENDPOINT, API_BASE_URL } from '../constants/constants';
 import CustomEventEmitter from '../utils/CustomEventEmitter';
-interface Post {
-  _id: string;
-  imageUrl: string;
-  caption: string;
-  likes: number;
-  comments: number;
-  user: {
-    username: string;
-    profilePicture?: string;
-  };
-}
 
-const Feed: React.FC = () => {
-  const [posts, setPosts] = useState<Post[]>([]);
+const Feed = () => {
+  const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
+
+  const handleLogout = async () => {
+    await AsyncStorage.removeItem('token');
+    await AsyncStorage.removeItem('userId');
+    router.push('/(auth)/login');
+  };
 
   const fetchPosts = async () => {
     try {
@@ -43,16 +38,26 @@ const Feed: React.FC = () => {
         },
       });
 
-      const postsWithFormattedUrls = response.data.map((post: Post) => ({
+      const postsWithFormattedUrls = response.data.map((post: any) => ({
         ...post,
-        imageUrl: post.imageUrl.replace(/\\/g, '/'),
+        imageUrl: `${API_BASE_URL}/${post.imageUrl.replace(/\\/g, '/')}`,
+        user: {
+          ...post.user,
+          profilePicture: post.user.profilePicture
+            ? `${API_BASE_URL}/${post.user.profilePicture.replace(/\\/g, '/')}`
+            : null,
+        },
       }));
 
       setPosts(postsWithFormattedUrls);
       setLoading(false);
     } catch (error) {
       console.error('Error al cargar posts:', error);
-      Alert.alert('Error', 'No se pudieron cargar las publicaciones.');
+      if (error.response && error.response.status === 403) {
+        handleLogout();
+      } else {
+        Alert.alert('Error', 'No se pudieron cargar las publicaciones.');
+      }
       setLoading(false);
     }
   };
@@ -64,18 +69,31 @@ const Feed: React.FC = () => {
   );
 
   useEffect(() => {
-    fetchPosts();
-
-    const onRefreshFeed = () => {
+    const handlePostAdded = () => {
       fetchPosts();
     };
-
-    CustomEventEmitter.on('refreshFeed', onRefreshFeed);
+    CustomEventEmitter.on('refresh', handlePostAdded);
 
     return () => {
-      CustomEventEmitter.off('refreshFeed', onRefreshFeed);
+      CustomEventEmitter.off('refresh', handlePostAdded);
     };
   }, []);
+
+  const renderItem = ({ item }: { item: any }) => (
+    <Post
+      postId={item._id}
+      username={item.user.username}
+      userId={item.user._id}
+      profileImageUrl={
+        item.user.profilePicture ? { uri: item.user.profilePicture } : require('../assets/defaultProfile.png')
+      }
+      postTime={item.createdAt}
+      imageUrl={item.imageUrl}
+      description={item.caption}
+      initialLikes={item.likes}
+      profileView={false}
+    />
+  );
 
   return (
     <View style={styles.feedContainer}>
@@ -85,29 +103,25 @@ const Feed: React.FC = () => {
         <FlatList
           data={posts}
           keyExtractor={(item) => item._id}
-          renderItem={({ item }) => (
-            <View style={styles.postContainer}>
-              <View style={styles.userInfo}>
-                <Image
-                  source={
-                    item.user.profilePicture
-                      ? { uri: item.user.profilePicture }
-                      : require('../assets/defaultProfile.png')
-                  }
-                  style={styles.profileImage}
-                />
-                <Text style={styles.username}>{item.user.username}</Text>
-              </View>
-              <Image source={{ uri: `${API_BASE_URL}/${item.imageUrl}` }} style={styles.postImage} />
-              <Text style={styles.caption}>{item.caption || 'Sin descripción'}</Text>
-              <Text style={styles.likes}>{item.likes} Likes</Text>
-              <Text style={styles.comments}>Ver los {item.comments} comentarios</Text>
-            </View>
-          )}
+          renderItem={renderItem}
         />
       )}
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  feedContainer: {
+    flex: 1,
+    padding: 10,
+    backgroundColor: '#000',
+  },
+  loadingText: {
+    color: '#fff',
+  },
+  errorText: {
+    color: '#ff5c5c',
+  },
+});
 
 export default Feed;
