@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Navbar from '@web/components/Navbar.jsx';
 import Sidebar from '@web/components/Sidebar.jsx';
 import Home from '@web/screens/Home.jsx';
@@ -47,6 +46,7 @@ function App() {
         />
       );
     }
+
     // Si hay token, muestra las pantallas protegidas
     switch (currentScreen) {
       case 'home':
@@ -56,7 +56,7 @@ function App() {
       case 'profile':
         return <Profile />;
       case 'userProfile':
-        return <UserProfile userId={currentUserId} />;
+        return <UserProfile userId={currentUserId} onNavigate={handleNavigate} />;
       default:
         return <Home />;
     }
@@ -70,26 +70,17 @@ function App() {
   };
 
   return (
-    <Router>
-      <div className="app-container">
-        {(token || currentScreen === 'login' || currentScreen === 'signup') && (
-          <Navbar
-            isLoggedIn={!!token}
-            onLogOff={handleLogOff}
-            onNavigate={handleNavigate}
-          />
-        )}
-        {token && <Sidebar />} {/* Renderiza Sidebar solo si hay token */}
-        <div className="content">
-          <Routes>
-            <Route path="/" element={<Home onNavigate={handleNavigate} />} />
-            <Route path="/notifications" element={<Notifications />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/userProfile/:userId" element={<UserProfile />} />
-          </Routes>
-        </div>
-      </div>
-    </Router>
+    <div className="app-container">
+      {(token || currentScreen === 'login' || currentScreen === 'signup') && (
+        <Navbar
+          isLoggedIn={!!token}
+          onLogOff={handleLogOff}
+          onNavigate={handleNavigate}
+        />
+      )}
+      {token && <Sidebar onNavigate={handleNavigate} />} {/* Renderiza Sidebar solo si hay token */}
+      <div className="content">{renderScreen()}</div>
+    </div>
   );
 }
 

@@ -51,6 +51,7 @@ function Home({ onNavigate }) {
               imageUrl={post.imageUrl}
               description={post.caption}
               likes={post.likes} // Pasa la información de los likes
+              commentsIDs={post.comments} // Pasa la información de los comments
               profileView={false}
               onNavigate={onNavigate} // Pasa la función onNavigate
             />

@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
 import '@web/components/css/Post.css';
-import { POSTS_ENDPOINT } from '../components/Constants';
+import { API_BASE_URL, POSTS_ENDPOINT, COMMENTS_ENDPOINT } from '../components/Constants';
 
-function Post({ postId, userId, username, profileImageUrl, postTime, imageUrl, description, likes = [], profileView = false }) {
+function Post({ postId, userId, username, profileImageUrl, postTime, imageUrl, description, likes = [], commentsIDs = [], profileView = false, onNavigate }) {
   const [hasLikes, setHasLikes] = useState(false);
   const [likesCount, setLikesCount] = useState(likes.length);
-  const navigate = useNavigate();
+  const [comments, setComments] = useState([]);
+  const [comment, setComment] = useState('');
 
   useEffect(() => {
     const userId = localStorage.getItem('userId');
@@ -15,6 +15,14 @@ function Post({ postId, userId, username, profileImageUrl, postTime, imageUrl, d
       setHasLikes(true);
     }
   }, [likes]);
+
+  useEffect(() => {
+    const fetchCommentsData = async () => {
+      const result = await fetchComments(commentsIDs);
+      setComments(result);
+    }
+    fetchCommentsData();
+  }, [commentsIDs]);
 
   const handleLike = async () => {
     try {
@@ -51,8 +59,48 @@ function Post({ postId, userId, username, profileImageUrl, postTime, imageUrl, d
   };
 
   const handleUsernameClick = () => {
-    navigate(`/userProfile/${userId}`);
+    onNavigate('userProfile', userId);
   };
+
+  const handleNewComment = async () => {
+    try {
+      const token = localStorage.token;
+      if (!token) {
+        alert('No se encontró el token. Inicia sesión nuevamente.');
+        return;
+      }
+      const response = await axios.post(`${POSTS_ENDPOINT}/${postId}/comments`,
+        {
+          content: comment,
+        }, {
+          headers: { "Authorization": `Bearer ${token}` }
+        });
+      setComment('');
+      setComments([...comments, response.data]);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const fetchComments = async (commentsIDs) => {
+    try {
+      const token = localStorage.token;
+      if (!token) {
+        alert('No se encontró el token. Inicia sesión nuevamente.');
+        return;
+      }
+      // Promise.all permite hacer todas las llamadas en paralelo
+      const responses = await Promise.all(
+        commentsIDs.map((commentID) => axios.get(`${COMMENTS_ENDPOINT}/${commentID}`, {
+          headers: { "Authorization": `Bearer ${token}` }
+        }))
+      )
+      return responses.map((response) => response.data);
+    } catch (error) {
+      console.log(error);
+      return [];
+    }
+  }
 
   return (
     <div className={`box ${profileView ? 'profile-view' : 'feed-view'}`}>
@@ -72,7 +120,7 @@ function Post({ postId, userId, username, profileImageUrl, postTime, imageUrl, d
         </article>
       )}
       <div className={`image ${profileView ? 'is-square' : 'is-4by3'}`}>
-        <img src={imageUrl} alt="Post" className="post-image" />
+        <img src={`${API_BASE_URL}/${imageUrl}`} alt="Post" className="post-image" />
       </div>
       {!profileView &&
         <div>
@@ -81,6 +129,31 @@ function Post({ postId, userId, username, profileImageUrl, postTime, imageUrl, d
               {hasLikes ? <i className="fa-solid fa-heart"></i> : <i className="fa-regular fa-heart"></i>}
             </button>
             <small>{likesCount} Likes</small>
+          </div>
+          {/* Comentarios */}
+          <div className="content-vertical m-3">
+            <p className="subtitle is-6 m-0">Comentarios:</p>
+            <div>
+              {comments.map((commentContent) => (
+                <div className="field is-grouped m-1" key={commentContent._id}>
+                  <p><b>{commentContent.user.username}</b> {commentContent.content}</p>
+                </div>
+              ))}
+            </div>
+            <div className='field is-grouped'>
+              <input
+                type='text'
+                className='input'
+                placeholder='Agrega un comentario...'
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    handleNewComment()
+                  }
+                }}
+              />
+            </div>
           </div>
         </div>
       }
