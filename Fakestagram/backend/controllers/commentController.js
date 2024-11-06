@@ -40,16 +40,26 @@ const getComment = async (req, res) => {
   try {
     const { commentId } = req.params;
 
-    // Buscar el comentario por su ID
     const comment = await Comment.findById(commentId).populate(
       "user",
-      "username email"
+      "username email profilePicture"
     );
+
     if (!comment) {
       return res.status(404).json({ message: "Comentario no encontrado" });
     }
 
-    res.status(200).json(comment);
+    res.status(200).json({
+      _id: comment._id,
+      content: comment.content,
+      createdAt: comment.createdAt,
+      updatedAt: comment.updatedAt,
+      user: {
+        id: comment.user._id,
+        username: comment.user.username,
+        profilePicture: comment.user.profilePicture,
+      },
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Error del servidor" });
@@ -65,7 +75,6 @@ const removeComment = async (req, res) => {
       return res.status(404).json({ message: "Post no encontrado" });
     }
 
-    // Verificar si el comentario existe y pertenece al usuario autenticado
     const comment = await Comment.findById(commentId);
     if (!comment) {
       return res.status(404).json({ message: "Comentario no encontrado" });
@@ -77,13 +86,11 @@ const removeComment = async (req, res) => {
         .json({ message: "No tienes permiso para eliminar este comentario" });
     }
 
-    // Eliminar el comentario de la base de datos
-    await comment.remove();
-
+    const deletedComment = await Comment.findByIdAndDelete(commentId);
     post.comments = post.comments.filter((id) => id.toString() !== commentId);
     await post.save();
 
-    res.status(200).json({ message: "Comentario eliminado correctamente" });
+    res.status(200).json(deletedComment); // Retorna el comentario eliminado directamente
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Error del servidor" });

@@ -76,11 +76,15 @@ const removeFriend = async (req, res) => {
       return res.status(400).json({ message: "Este usuario no es tu amigo" });
     }
 
-    // Remover el amigo del array de amigos del usuario
     user.friends = user.friends.filter(
       (friendId) => friendId.toString() !== friend._id.toString()
     );
     await user.save();
+
+    friend.friends = friend.friends.filter(
+      (friendId) => friendId.toString() !== user._id.toString()
+    );
+    await friend.save();
 
     res.status(200).json({ message: "Amigo eliminado correctamente" });
   } catch (error) {
@@ -101,8 +105,8 @@ const updateUserProfile = async (req, res) => {
       user.username = req.body.username;
     }
 
-    if (req.body.email) {
-      user.email = req.body.email;
+    if (req.body.description) {
+      user.description = req.body.description;
     }
 
     if (req.body.profilePicture) {
@@ -115,8 +119,8 @@ const updateUserProfile = async (req, res) => {
       message: "Perfil actualizado correctamente",
       user: {
         username: user.username,
-        email: user.email,
         profilePicture: user.profilePicture,
+        description: user.description,
       },
     });
   } catch (error) {
@@ -124,7 +128,6 @@ const updateUserProfile = async (req, res) => {
     res.status(500).json({ message: "Error del servidor" });
   }
 };
-
 
 module.exports = {
   getUserProfile,
