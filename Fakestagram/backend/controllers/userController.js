@@ -105,8 +105,8 @@ const updateUserProfile = async (req, res) => {
       user.username = req.body.username;
     }
 
-    if (req.body.description) {
-      user.description = req.body.description;
+    if (req.body.email) {
+      user.email = req.body.email;
     }
 
     if (req.body.profilePicture) {
@@ -119,8 +119,8 @@ const updateUserProfile = async (req, res) => {
       message: "Perfil actualizado correctamente",
       user: {
         username: user.username,
+        email: user.email,
         profilePicture: user.profilePicture,
-        description: user.description,
       },
     });
   } catch (error) {
@@ -128,6 +128,7 @@ const updateUserProfile = async (req, res) => {
     res.status(500).json({ message: "Error del servidor" });
   }
 };
+
 
 module.exports = {
   getUserProfile,
