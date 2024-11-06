@@ -22,8 +22,7 @@ const fetchUserProfile = async (userId) => {
   }
 };
 
-function UserProfile() {
-  const { userId } = useParams();
+function UserProfile({ userId }) {
   const [profile, setProfile] = useState({});
 
   useEffect(() => {
@@ -63,12 +62,19 @@ function UserProfile() {
           <Post
             key={post._id} // Asegúrate de que cada Post tenga una key única
             postId={post._id} // Pasa el postId correctamente
+            userId={post.user?._id} // Pasa el userId correctamente
             username={post.user?.username || 'Usuario desconocido'}
             profileImageUrl={post.user?.profilePicture || 'defaultProfileImageUrl'}
             postTime={post.createdAt}
             imageUrl={post.imageUrl}
             description={post.caption}
-            profileView={true}
+            likes={post.likes} // Pasa la información de los likes
+            commentsIDs={post.comments} // Pasa la información de los comments
+            profileView={true} // Indica que es la vista de perfil
+            onNavigate={(path) => {
+              localStorage.setItem('profileUserId', post.user?._id);
+              window.location.href = path;
+            }}
           />
         ))}
       </div>

@@ -58,6 +58,11 @@ function App() {
       );
     }
 
+    if (currentScreen.startsWith('/userProfile/')) {
+      const userId = currentScreen.split('/').pop();
+      return <UserProfile userId={userId} />;
+    }
+
     switch (currentScreen) {
       case '/home':
         return <Home onNavigate={handleNavigate} />;
@@ -65,8 +70,6 @@ function App() {
         return <Notifications />;
       case '/profile':
         return <Profile />;
-      case '/userProfile':
-        return <UserProfile userId={currentUserId} onNavigate={handleNavigate} />;
       default:
         return <Home onNavigate={handleNavigate} />;
     }

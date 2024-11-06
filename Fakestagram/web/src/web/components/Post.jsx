@@ -20,7 +20,7 @@ function Post({ postId, userId, username, profileImageUrl, postTime, imageUrl, d
     const fetchCommentsData = async () => {
       const result = await fetchComments(commentsIDs);
       setComments(result);
-    }
+    };
     fetchCommentsData();
   }, [commentsIDs]);
 
@@ -59,7 +59,8 @@ function Post({ postId, userId, username, profileImageUrl, postTime, imageUrl, d
   };
 
   const handleUsernameClick = () => {
-    onNavigate('userProfile', userId);
+    localStorage.setItem('profileUserId', userId);
+    window.location.href = `/userProfile/${userId}`;
   };
 
   const handleNewComment = async () => {
@@ -69,12 +70,11 @@ function Post({ postId, userId, username, profileImageUrl, postTime, imageUrl, d
         alert('No se encontró el token. Inicia sesión nuevamente.');
         return;
       }
-      const response = await axios.post(`${POSTS_ENDPOINT}/${postId}/comments`,
-        {
-          content: comment,
-        }, {
-          headers: { "Authorization": `Bearer ${token}` }
-        });
+      const response = await axios.post(`${POSTS_ENDPOINT}/${postId}/comments`, {
+        content: comment,
+      }, {
+        headers: { "Authorization": `Bearer ${token}` }
+      });
       setComment('');
       setComments([...comments, response.data]);
     } catch (error) {
@@ -94,13 +94,13 @@ function Post({ postId, userId, username, profileImageUrl, postTime, imageUrl, d
         commentsIDs.map((commentID) => axios.get(`${COMMENTS_ENDPOINT}/${commentID}`, {
           headers: { "Authorization": `Bearer ${token}` }
         }))
-      )
+      );
       return responses.map((response) => response.data);
     } catch (error) {
       console.log(error);
       return [];
     }
-  }
+  };
 
   return (
     <div className={`box ${profileView ? 'profile-view' : 'feed-view'}`}>
@@ -122,7 +122,7 @@ function Post({ postId, userId, username, profileImageUrl, postTime, imageUrl, d
       <div className={`image ${profileView ? 'is-square' : 'is-4by3'}`}>
         <img src={`${API_BASE_URL}/${imageUrl}`} alt="Post" className="post-image" />
       </div>
-      {!profileView &&
+      {!profileView && (
         <div>
           <div className="content-vertical">
             <button onClick={hasLikes ? handleUnlike : handleLike}>
@@ -130,7 +130,6 @@ function Post({ postId, userId, username, profileImageUrl, postTime, imageUrl, d
             </button>
             <small>{likesCount} Likes</small>
           </div>
-          {/* Comentarios */}
           <div className="content-vertical m-3">
             <p className="subtitle is-6 m-0">Comentarios:</p>
             <div>
@@ -149,14 +148,14 @@ function Post({ postId, userId, username, profileImageUrl, postTime, imageUrl, d
                 onChange={(e) => setComment(e.target.value)}
                 onKeyDown={(e) => {
                   if (e.key === 'Enter') {
-                    handleNewComment()
+                    handleNewComment();
                   }
                 }}
               />
             </div>
           </div>
         </div>
-      }
+      )}
     </div>
   );
 }
