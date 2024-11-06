@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { View, FlatList, ActivityIndicator, Alert, StyleSheet } from 'react-native';
+import { View, FlatList, ActivityIndicator, Alert, StyleSheet, Dimensions  } from 'react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
@@ -7,6 +7,8 @@ import { useFocusEffect } from '@react-navigation/native';
 import Post from '../components/Post';
 import { POSTS_ENDPOINT, API_BASE_URL } from '../constants/constants';
 import CustomEventEmitter from '../utils/CustomEventEmitter';
+
+const screenWidth = Dimensions.get('window').width;
 
 const Feed = () => {
   const [posts, setPosts] = useState([]);
@@ -90,6 +92,7 @@ const Feed = () => {
       postTime={item.createdAt}
       imageUrl={item.imageUrl}
       description={item.caption}
+      commentsIDs={item.comments}
       initialLikes={item.likes}
       profileView={false}
     />

@@ -1,10 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, Image, Alert, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
+import { View, Text, Image, Alert, StyleSheet, TouchableOpacity, Dimensions, TextInput, FlatList } from 'react-native';
 import { likePost, unlikePost } from '../services/postService';
 import { getUserId } from '../utils/auth';
 import { useRouter } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 import { FontAwesome } from '@expo/vector-icons';
+import { COMMENTS_ENDPOINT, POSTS_ENDPOINT } from '../constants/constants';
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -18,11 +20,14 @@ interface PostProps {
   description: string;
   initialLikes: string[];
   profileView: boolean;
+  commentsIDs?: string[]; // Hacer que commentsIDs sea opcional
 }
 
-const Post: React.FC<PostProps> = ({ postId, username, userId, profileImageUrl, postTime, imageUrl, description, initialLikes, profileView }) => {
+const Post: React.FC<PostProps> = ({ postId, username, userId, profileImageUrl, postTime, imageUrl, description, initialLikes, profileView, commentsIDs = [] }) => {
   const [hasLiked, setHasLiked] = useState(false);
   const [likesCount, setLikesCount] = useState(initialLikes.length);
+  const [comments, setComments] = useState([]);
+  const [comment, setComment] = useState('');
   const router = useRouter();
   const lastTap = useRef<number | null>(null);
 
@@ -74,6 +79,57 @@ const Post: React.FC<PostProps> = ({ postId, username, userId, profileImageUrl, 
     }
   };
 
+  const fetchComments = async (commentsIDs) => {
+    try {
+
+      const token = await AsyncStorage.getItem('token');
+      if (!token) {
+        Alert.alert('Error', 'No se encontró un token de autenticación. Inicia sesión nuevamente.');
+        return [];
+      }
+
+      const responses = await Promise.all(
+        commentsIDs.map((commentID) => axios.get(`${COMMENTS_ENDPOINT}/${commentID}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        }))
+      );;
+
+      const commentsData = responses.map((response) => response.data);
+      return commentsData;
+    } catch (error) {
+      console.error('Error al cargar comentarios:', error);
+      Alert.alert('Error', 'No se pudieron cargar los comentarios.');
+      return [];
+    }
+  };
+
+  const handleNewComment = async () => {
+    try {
+      const token = await AsyncStorage.getItem('token');
+      if (!token) {
+        Alert.alert('Error', 'No se encontró un token de autenticación. Inicia sesión nuevamente.');
+        return;
+      }
+
+      const response = await axios.post(`${POSTS_ENDPOINT}/${postId}/comments`, { content: comment }, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setComment('');
+      setComments([...comments, response.data]);
+    } catch (error) {
+      console.error('Error al agregar comentario:', error);
+      Alert.alert('Error', 'No se pudo agregar el comentario.');
+    }
+  };
+
+  useEffect(() => {
+    const fetchCommentsData = async () => {
+      const result = await fetchComments(commentsIDs);
+      setComments(result);
+    };
+    fetchCommentsData();
+  }, [commentsIDs]);
+
   return (
     <View style={styles.postContainer}>
       <View style={styles.header}>
@@ -101,6 +157,24 @@ const Post: React.FC<PostProps> = ({ postId, username, userId, profileImageUrl, 
           <Text style={styles.likesCount}>{likesCount}</Text>
         </View>
       </View>
+      <FlatList
+        data={comments}
+        keyExtractor={(item) => item._id}
+        renderItem={({ item }) => (
+          <Text style={styles.commentText}>{item.user.username}: {item.content}</Text>
+        )}
+        ListEmptyComponent={<Text style={styles.noCommentsText}>No hay comentarios aún.</Text>}
+      />
+      <TextInput
+        placeholder="Agregar un comentario..."
+        placeholderTextColor="#888"
+        value={comment}
+        onChangeText={setComment}
+        style={styles.input}
+      />
+      <TouchableOpacity onPress={handleNewComment} style={styles.addCommentButton}>
+        <Text style={styles.addCommentButtonText}>Enviar</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -158,6 +232,37 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     color: 'white',
+  },
+  commentText: {
+    color: 'white',
+    marginBottom: 5,
+  },
+  noCommentsText: {
+    color: '#888',
+    textAlign: 'center',
+    marginTop: 10,
+  },
+  input: {
+    width: '100%',
+    height: 40,
+    borderColor: '#ddd',
+    borderWidth: 1,
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    marginBottom: 10,
+    color: 'white',
+  },
+  addCommentButton: {
+    backgroundColor: '#007bff',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  addCommentButtonText: {
+    color: '#fff',
+    fontSize: 16,
   },
 });
 
