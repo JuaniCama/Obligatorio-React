@@ -20,9 +20,9 @@ const Login = ({ onLogin, onNavigate }) => {
       });
       localStorage.setItem('token', response.data.token);
       localStorage.setItem('userId', response.data._id);
-      onLogin(response.data.token); // Actualiza el estado del token en App
+      onLogin(response.data.token, response.data._id); // Actualiza el estado del token y userId en App
       alert('Login exitoso');
-      onNavigate('home'); // Redirige al Home
+      onNavigate('/home'); // Redirige al Home
 
     } catch (err) {
       console.error(err);
@@ -50,6 +50,9 @@ const Login = ({ onLogin, onNavigate }) => {
       <button onClick={handleLogin} style={{ width: '100%', padding: '10px' }}>
         Iniciar sesión
       </button>
+      <p style={{ textAlign: 'center', marginTop: '10px' }}>
+        ¿No tienes una cuenta? <a href="#" onClick={() => onNavigate('/register')}>Regístrate</a>
+      </p>
     </div>
   );
 };

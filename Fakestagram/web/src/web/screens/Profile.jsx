@@ -1,20 +1,20 @@
 import React, { useState, useEffect } from 'react';
+import Modal from 'react-modal';
 import Post from '../components/Post'; // Asumiendo que tienes un componente Post para cada post individual
 import './css/Profile.css'; // Archivo CSS que contiene los estilos
 import { PROFILE_ENDPOINT } from '../components/Constants';
 import axios from 'axios';
 
 // Obtener el perfil del usuario dado su ID
-const fetchProfile = async () => {
+const fetchProfile = async (userId) => {
   try {
-    const token = localStorage.token;
-    const userId = localStorage.userId;
+    const token = localStorage.getItem('token');
     if (!token || !userId) {
       alert('No se encontró el token o userId. Inicia sesión nuevamente.');
       return;
     }
 
-    const response = await axios.get(`${PROFILE_ENDPOINT}` + userId, {
+    const response = await axios.get(`${PROFILE_ENDPOINT}${userId}`, {
       headers: { "Authorization": `Bearer ${token}` }
     });
 
@@ -26,7 +26,7 @@ const fetchProfile = async () => {
 
 const updateProfile = async (profileData) => {
   try {
-    const token = localStorage.token;
+    const token = localStorage.getItem('token');
     if (!token) {
       alert('No se encontró el token. Inicia sesión nuevamente.');
       return;
@@ -44,29 +44,28 @@ const updateProfile = async (profileData) => {
 
 function Profile() {
   const [profile, setProfile] = useState({});
-  const [isEditing, setIsEditing] = useState(false);
   const [username, setUsername] = useState('');
-  const [profilePicture, setProfilePicture] = useState('');
   const [email, setEmail] = useState('');
+  const [isEditing, setIsEditing] = useState(false);
+
+  const getProfile = async () => {
+    const userId = localStorage.getItem('userId');
+    const data = await fetchProfile(userId);
+    if (data) {
+      setProfile(data);
+      setUsername(data.user?.username || '');
+      setEmail(data.user?.email || '');
+    }
+  };
 
   useEffect(() => {
-    const getProfile = async () => {
-      const data = await fetchProfile();
-      if (data) {
-        setProfile(data);
-        setUsername(data.user?.username || '');
-        setProfilePicture(data.user?.profilePicture || '');
-        setEmail(data.user?.email || '');
-      }
-    };
     getProfile();
   }, []);
 
-  const handleEdit = async () => {
-    const updatedProfile = await updateProfile({ username, profilePicture, email });
+  const handleSave = async () => {
+    const updatedProfile = await updateProfile({ username, email });
     if (updatedProfile) {
-      const data = await fetchProfile(); // Vuelve a obtener los datos del perfil
-      setProfile(data); // Actualiza el estado del perfil con los datos más recientes
+      setProfile(updatedProfile);
       setIsEditing(false);
     }
   };
@@ -81,29 +80,8 @@ function Profile() {
         />
         <div className="profile-info">
           <div className="profile-username">
-            {isEditing ? (
-              <>
-                <input
-                  type="text"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  className="profile-input"
-                />
-                <input
-                  type="text"
-                  value={profilePicture}
-                  onChange={(e) => setProfilePicture(e.target.value)}
-                  className="profile-input"
-                />
-                <button onClick={handleEdit} className="profile-btn save-btn">Save</button>
-                <button onClick={() => setIsEditing(false)} className="profile-btn cancel-btn">Cancel</button>
-              </>
-            ) : (
-              <>
-                <h2>{profile.user?.username}</h2>
-                <button className="edit-profile-btn" onClick={() => setIsEditing(true)}>Edit profile</button>
-              </>
-            )}
+            <h2>{profile.user?.username}</h2>
+            <button className="edit-profile-btn" onClick={() => setIsEditing(true)}>Editar Perfil</button>
           </div>
           <div className="profile-stats">
             <span>{profile.posts?.length} posts</span>
@@ -120,15 +98,43 @@ function Profile() {
           <Post
             key={post._id} // Asegúrate de que cada Post tenga una key única
             postId={post._id} // Pasa el postId correctamente
+            userId={post.user?._id} // Pasa el userId correctamente
             username={post.user?.username || 'Usuario desconocido'}
             profileImageUrl={post.user?.profilePicture || 'defaultProfileImageUrl'}
             postTime={post.createdAt}
             imageUrl={post.imageUrl}
             description={post.caption}
-            profileView={true}
+            likes={post.likes} // Pasa la información de los likes
+            commentsIDs={post.comments} // Pasa la información de los comments
+            profileView={true} // Indica que es la vista de perfil
           />
         ))}
       </div>
+      <Modal
+        isOpen={isEditing}
+        onRequestClose={() => setIsEditing(false)}
+        contentLabel="Editar Perfil"
+        className="edit-profile-modal"
+        overlayClassName="edit-profile-overlay"
+      >
+        <h3>Editar Perfil</h3>
+        <input
+          type="text"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          placeholder="Nuevo nombre de usuario"
+          className="profile-input"
+        />
+        <input
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="Nuevo correo electrónico"
+          className="profile-input"
+        />
+        <button className="profile-btn save-btn" onClick={handleSave}>Guardar</button>
+        <button className="profile-btn cancel-btn" onClick={() => setIsEditing(false)}>Cancelar</button>
+      </Modal>
     </div>
   );
 }

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
-const SignUp = () => {
+const SignUp = ({ onNavigate }) => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -15,12 +15,15 @@ const SignUp = () => {
     }
 
     try {
-      await axios.post('http://localhost:3001/api/auth/register', {
+      const response = await axios.post('http://localhost:3001/api/auth/register', {
         username,
         email,
         password,
       });
+      localStorage.setItem('token', response.data.token);
+      localStorage.setItem('userId', response.data._id);
       alert('Usuario registrado con éxito');
+      onNavigate('/login'); // Redirige al Login después del registro
     } catch (err) {
       console.error(err);
       alert('Error al registrar el usuario');

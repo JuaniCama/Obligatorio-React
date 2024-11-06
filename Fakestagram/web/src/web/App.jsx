@@ -11,74 +11,84 @@ import UserProfile from '@web/screens/UserProfile.jsx';
 import './App.css';
 
 function App() {
-  const [currentScreen, setCurrentScreen] = useState('login'); // Empieza en login
+  const [currentScreen, setCurrentScreen] = useState(window.location.pathname);
   const [token, setToken] = useState(localStorage.getItem('token') || null);
-  const [currentUserId, setCurrentUserId] = useState(null);
+  const [currentUserId, setCurrentUserId] = useState(localStorage.getItem('userId') || null);
 
-  // Redirige a la pantalla de login si no hay token
   useEffect(() => {
-    if (!token) {
-      setCurrentScreen('login');
-    }
-  }, [token]);
+    const handlePopState = () => {
+      setCurrentScreen(window.location.pathname);
+    };
+
+    window.addEventListener('popstate', handlePopState);
+
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, []);
 
   const handleNavigate = (screen, userId = null) => {
     setCurrentScreen(screen);
+    window.history.pushState({}, '', screen);
     if (userId) {
       setCurrentUserId(userId);
+      localStorage.setItem('userId', userId);
     }
   };
 
   const renderScreen = () => {
     if (!token) {
-      // Si no hay token, muestra Login o Signup
-      if (currentScreen === 'signup') {
+      if (currentScreen === '/signup') {
+        return <Signup onNavigate={handleNavigate} />;
+      }
+      if (currentScreen === '/register') {
         return <Signup onNavigate={handleNavigate} />;
       }
       return (
         <Login
-          onLogin={(token) => {
-            setToken(token); // Guarda el token
-            localStorage.setItem('token', token); // Almacena en localStorage
-            setCurrentScreen('home'); // Redirige a home después del login
+          onLogin={(token, userId) => {
+            setToken(token);
+            localStorage.setItem('token', token);
+            setCurrentUserId(userId);
+            localStorage.setItem('userId', userId);
+            handleNavigate('/home');
           }}
           onNavigate={handleNavigate}
         />
       );
     }
 
-    // Si hay token, muestra las pantallas protegidas
     switch (currentScreen) {
-      case 'home':
+      case '/home':
         return <Home onNavigate={handleNavigate} />;
-      case 'notifications':
+      case '/notifications':
         return <Notifications />;
-      case 'profile':
+      case '/profile':
         return <Profile />;
-      case 'userProfile':
+      case '/userProfile':
         return <UserProfile userId={currentUserId} onNavigate={handleNavigate} />;
       default:
-        return <Home />;
+        return <Home onNavigate={handleNavigate} />;
     }
   };
 
   const handleLogOff = () => {
     setToken(null);
-    localStorage.removeItem('token'); // Elimina el token
-    localStorage.removeItem('userId'); // Elimina el userId
-    setCurrentScreen('login'); // Redirige a Login después de cerrar sesión
+    localStorage.removeItem('token');
+    localStorage.removeItem('userId');
+    handleNavigate('/login');
   };
 
   return (
     <div className="app-container">
-      {(token || currentScreen === 'login' || currentScreen === 'signup') && (
+      {(token || currentScreen === '/login' || currentScreen === '/signup' || currentScreen === '/register') && (
         <Navbar
           isLoggedIn={!!token}
           onLogOff={handleLogOff}
           onNavigate={handleNavigate}
         />
       )}
-      {token && <Sidebar onNavigate={handleNavigate} />} {/* Renderiza Sidebar solo si hay token */}
+      {token && <Sidebar onNavigate={handleNavigate} />}
       <div className="content">{renderScreen()}</div>
     </div>
   );
