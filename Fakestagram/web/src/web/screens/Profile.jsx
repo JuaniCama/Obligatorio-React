@@ -65,7 +65,7 @@ function Profile() {
   const handleSave = async () => {
     const updatedProfile = await updateProfile({ username, email });
     if (updatedProfile) {
-      setProfile(updatedProfile);
+      await getProfile(); // Actualiza el perfil y los posts después de guardar los cambios
       setIsEditing(false);
     }
   };
