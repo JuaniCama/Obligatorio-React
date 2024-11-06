@@ -183,8 +183,10 @@ const styles = StyleSheet.create({
   postContainer: {
     marginBottom: 20,
     backgroundColor: '#333',
+    width: screenWidth > 800 ? 800 : '100%',
     padding: 10,
     borderRadius: 10,
+    alignSelf: 'center',
     shadowColor: '#000',
     shadowOpacity: 0.1,
     shadowRadius: 10,
