@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
 import Post from '../components/Post'; // Asumiendo que tienes un componente Post para cada post individual
 import './css/Profile.css'; // Archivo CSS que contiene los estilos
 import { PROFILE_ENDPOINT } from '../components/Constants';
