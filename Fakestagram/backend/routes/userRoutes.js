@@ -150,6 +150,9 @@ router.post("/add-friend/:friendId", protect, addFriend);
  *               profilePicture:
  *                 type: string
  *                 example: "https://example.com/profile/nuevo_username.jpg"
+ *               description:
+ *                 type: string
+ *                 example: "Nueva descripción del usuario"
  *     responses:
  *       200:
  *         description: Perfil actualizado correctamente
@@ -170,6 +173,9 @@ router.post("/add-friend/:friendId", protect, addFriend);
  *                     profilePicture:
  *                       type: string
  *                       example: "https://example.com/profile/nuevo_username.jpg"
+ *                     description:
+ *                       type: string
+ *                       example: "Nueva descripción del usuario"
  *       400:
  *         description: Petición incorrecta, datos inválidos
  *       404:
