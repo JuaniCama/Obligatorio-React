@@ -3,20 +3,33 @@ import axios from 'axios';
 import Post from '../components/Post'; // Importa el componente Post
 import Notifications from '../components/Notifications'; // Importa el componente Notification
 import './css/Home.css'; // Archivo CSS que contiene los estilos
-import { FEED_ENDPOINT } from '../components/Constants';
+import { FEED_ENDPOINT, API_BASE_URL } from '../components/Constants';
 
 const fetchPosts = async () => {
   try {
     const token = localStorage.token;
-
     if (!token) {
       return [];
     }
-
     const response = await axios.get(`${FEED_ENDPOINT}`, {
       headers: { "Authorization": `Bearer ${token}` }
     });
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    return [];
+  }
+};
 
+const fetchNotifications = async () => {
+  try {
+    const token = localStorage.token;
+    if (!token) {
+      return [];
+    }
+    const response = await axios.get(`${API_BASE_URL}/api/notifications`, {
+      headers: { "Authorization": `Bearer ${token}` }
+    });
     return response.data;
   } catch (error) {
     console.log(error);
@@ -26,6 +39,7 @@ const fetchPosts = async () => {
 
 function Home({ onNavigate }) {
   const [posts, setPosts] = useState([]);
+  const [notifications, setNotifications] = useState([]);
 
   useEffect(() => {
     const getPosts = async () => {
@@ -35,6 +49,18 @@ function Home({ onNavigate }) {
     getPosts();
   }, []);
 
+  useEffect(() => {
+    const getNotifications = async () => {
+      const data = await fetchNotifications();
+      setNotifications(Array.isArray(data) ? data : []);
+    };
+    getNotifications();
+  }, []);
+
+  const handleDeleteNotification = (notificationId) => {
+    setNotifications(notifications.filter(notification => notification._id !== notificationId));
+  };
+
   return (
     <div className="content">
       <div className="feed">
@@ -42,36 +68,39 @@ function Home({ onNavigate }) {
         <div>
           {posts.map((post) => (
             <Post
-              key={post._id} // Asegúrate de que cada Post tenga una key única
-              postId={post._id} // Pasa el postId correctamente
-              userId={post.user?._id} // Pasa el userId correctamente
+              key={post._id}
+              postId={post._id}
+              userId={post.user?._id}
               username={post.user?.username || 'Usuario desconocido'}
               profileImageUrl={post.user?.profilePicture || 'defaultProfileImageUrl'}
               postTime={post.createdAt}
               imageUrl={post.imageUrl}
               description={post.caption}
-              likes={post.likes} // Pasa la información de los likes
-              commentsIDs={post.comments} // Pasa la información de los comments
+              likes={post.likes}
+              commentsIDs={post.comments}
               profileView={false}
-              onNavigate={onNavigate} // Pasa la función onNavigate
+              onNavigate={onNavigate}
             />
           ))}
         </div>
       </div>
       <div className="notifications">
         <h2>Notificaciones</h2>
-        <Notifications
-          profileImageUrl="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQBquwCjgzlqB_iRQXk4XGJNDITTEw6_uJ6Yg&s"
-          username="gero.momo"
-          notificationMessage="le ha gustado tu historia."
-          timeAgo="1 dia"
-        />
-        <Notifications
-          profileImageUrl="https://media.tenor.com/-4Uzz-7fB34AAAAe/senseicloss-lasecta.png"
-          username="usuario456"
-          notificationMessage="ha comentado en tu foto."
-          timeAgo="2 sem"
-        />
+        {notifications.map((notification) => (
+          notification.causer && (
+            <Notifications
+              key={notification._id}
+              notificationId={notification._id}
+              causerProfileImageUrl={notification.causer.profilePicture}
+              causerUsername={notification.causer.username}
+              notificationMessage={notification.message}
+              timeAgo={new Date(notification.createdAt).toLocaleString()}
+              causerId={notification.causer._id}
+              onNavigate={onNavigate}
+              onDelete={handleDeleteNotification}
+            />
+          )
+        ))}
       </div>
     </div>
   );
