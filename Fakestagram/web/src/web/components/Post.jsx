@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import Modal from 'react-modal';
 import '@web/components/css/Post.css';
 import { API_BASE_URL, POSTS_ENDPOINT, COMMENTS_ENDPOINT } from '../components/Constants';
 
@@ -8,6 +9,8 @@ function Post({ postId, userId, username, profileImageUrl, postTime, imageUrl, d
   const [likesCount, setLikesCount] = useState(likes.length);
   const [comments, setComments] = useState([]);
   const [comment, setComment] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [likeUsers, setLikeUsers] = useState([]);
 
   useEffect(() => {
     const userId = localStorage.getItem('userId');
@@ -23,6 +26,23 @@ function Post({ postId, userId, username, profileImageUrl, postTime, imageUrl, d
     };
     fetchCommentsData();
   }, [commentsIDs]);
+
+  const handleLikeClick = async () => {
+    try {
+      const token = localStorage.token;
+      if (!token) {
+        alert('No se encontró el token. Inicia sesión nuevamente.');
+        return;
+      }
+      const response = await axios.get(`${POSTS_ENDPOINT}/${postId}/likes`, {
+        headers: { "Authorization": `Bearer ${token}` }
+      });
+      setLikeUsers(response.data);
+      setIsModalOpen(true);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const handleLike = async () => {
     try {
@@ -58,11 +78,6 @@ function Post({ postId, userId, username, profileImageUrl, postTime, imageUrl, d
     }
   };
 
-  const handleUsernameClick = () => {
-    localStorage.setItem('profileUserId', userId);
-    window.location.href = `/userProfile/${userId}`;
-  };
-
   const handleNewComment = async () => {
     try {
       const token = localStorage.token;
@@ -75,16 +90,16 @@ function Post({ postId, userId, username, profileImageUrl, postTime, imageUrl, d
       }, {
         headers: { "Authorization": `Bearer ${token}` }
       });
-  
+
       const newComment = response.data;
-  
+
       // Obtener la información del usuario para el nuevo comentario
       const userResponse = await axios.get(`${COMMENTS_ENDPOINT}/${newComment._id}`, {
         headers: { "Authorization": `Bearer ${token}` }
       });
-  
+
       const commentWithUser = userResponse.data;
-  
+
       setComment('');
       setComments([...comments, commentWithUser]);
     } catch (error) {
@@ -109,6 +124,12 @@ function Post({ postId, userId, username, profileImageUrl, postTime, imageUrl, d
     } catch (error) {
       console.log(error);
       return [];
+    }
+  };
+
+  const handleUsernameClick = () => {
+    if (onNavigate) {
+      onNavigate(`/userProfile/${userId}`);
     }
   };
 
@@ -138,7 +159,7 @@ function Post({ postId, userId, username, profileImageUrl, postTime, imageUrl, d
             <button onClick={hasLikes ? handleUnlike : handleLike}>
               {hasLikes ? <i className="fa-solid fa-heart"></i> : <i className="fa-regular fa-heart"></i>}
             </button>
-            <small>{likesCount} Likes</small>
+            <small onClick={handleLikeClick} style={{ cursor: 'pointer' }}>{likesCount} Likes</small>
           </div>
           <div className="content-vertical m-3">
             <p className="subtitle is-6 m-0">Comentarios:</p>
@@ -166,6 +187,24 @@ function Post({ postId, userId, username, profileImageUrl, postTime, imageUrl, d
           </div>
         </div>
       )}
+      <Modal
+        isOpen={isModalOpen}
+        onRequestClose={() => setIsModalOpen(false)}
+        contentLabel="Usuarios que dieron like"
+        className="like-modal"
+        overlayClassName="like-modal-overlay"
+      >
+        <h3>Likes</h3>
+        <ul className="like-users-list">
+          {likeUsers.map(user => (
+            <li key={user._id} className="like-user">
+              <img src={user.profilePicture} alt={`${user.username}'s profile`} className="like-user-image" />
+              <span>{user.username}</span>
+            </li>
+          ))}
+        </ul>
+        <button onClick={() => setIsModalOpen(false)}>Cerrar</button>
+      </Modal>
     </div>
   );
 }

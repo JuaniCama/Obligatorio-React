@@ -1,4 +1,5 @@
 const Post = require("../models/Post");
+const User = require("../models/User");
 const multer = require("multer");
 
 // Configuración de Multer para la subida de imágenes
@@ -93,5 +94,25 @@ const removeLike = async (req, res) => {
   }
 };
 
-module.exports = { uploadPost, getFeed, upload, likePost, removeLike };
+const getLikes = async (req, res) => {
+  try {
+    const { postId } = req.params;
+
+    // Verificar si el post existe
+    const post = await Post.findById(postId).populate("likes", "username profilePicture");
+    if (!post) {
+      return res.status(404).json({ message: "Post no encontrado" });
+    }
+
+    // Obtener los usuarios que dieron like
+    const likeUsers = post.likes;
+
+    res.status(200).json(likeUsers);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error del servidor" });
+  }
+};
+
+module.exports = { uploadPost, getFeed, upload, likePost, removeLike, getLikes };
 
