@@ -75,8 +75,18 @@ function Post({ postId, userId, username, profileImageUrl, postTime, imageUrl, d
       }, {
         headers: { "Authorization": `Bearer ${token}` }
       });
+  
+      const newComment = response.data;
+  
+      // Obtener la información del usuario para el nuevo comentario
+      const userResponse = await axios.get(`${COMMENTS_ENDPOINT}/${newComment._id}`, {
+        headers: { "Authorization": `Bearer ${token}` }
+      });
+  
+      const commentWithUser = userResponse.data;
+  
       setComment('');
-      setComments([...comments, response.data]);
+      setComments([...comments, commentWithUser]);
     } catch (error) {
       console.log(error);
     }
