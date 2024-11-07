@@ -1,5 +1,6 @@
 const Post = require("../models/Post");
 const User = require("../models/User");
+const { createNotification } = require('./notificationController');
 const multer = require("multer");
 
 // Configuración de Multer para la subida de imágenes
@@ -59,6 +60,9 @@ const likePost = async (req, res) => {
     // Agregar el like al post
     post.likes.push(req.user.id);
     await post.save();
+
+    // Crear notificación
+    await createNotification(post.user, req.user.id, 'like', `${req.user.username} le ha dado like a tu publicación`, postId);
 
     // Devolver el post actualizado
     res.status(200).json(post);

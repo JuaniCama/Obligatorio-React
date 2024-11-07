@@ -5,6 +5,7 @@ const dotenv = require("dotenv");
 const authRoutes = require("./routes/authRoutes");
 const postRoutes = require("./routes/postRoutes");
 const userRoutes = require("./routes/userRoutes");
+const notificationRoutes = require("./routes/notificationRoutes");
 const swaggerDocs = require("./config/swagger");
 
 dotenv.config();
@@ -17,11 +18,11 @@ app.use(express.json());
 // Inicializar Swagger en la aplicación
 swaggerDocs(app);
 
-// Resto del código de configuración de rutas y servidor
 // Rutas
 app.use("/api/auth", authRoutes);
 app.use("/api/posts", postRoutes);
 app.use("/api/user", userRoutes);
+app.use("/api/notifications", notificationRoutes);
 
 app.use("/uploads", express.static("./uploads"));
 

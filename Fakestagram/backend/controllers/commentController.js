@@ -2,6 +2,7 @@
 
 const Comment = require("../models/Comment");
 const Post = require("../models/Post");
+const { createNotification } = require('./notificationController');
 
 const createComment = async (req, res) => {
   try {
@@ -27,6 +28,9 @@ const createComment = async (req, res) => {
     // Agregar el comentario al array de comentarios del post
     post.comments.push(savedComment._id);
     await post.save();
+
+    // Crear notificación
+    await createNotification(post.user, req.user.id, 'comment', `${req.user.username} ha comentado en tu publicación`, postId, savedComment._id);
 
     // Devolver el comentario creado
     res.status(201).json(savedComment);

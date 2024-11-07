@@ -195,6 +195,7 @@ function Post({ postId, userId, username, profileImageUrl, postTime, imageUrl, d
         overlayClassName="like-modal-overlay"
       >
         <h3>Likes</h3>
+        <br></br>
         <ul className="like-users-list">
           {likeUsers.map(user => (
             <li key={user._id} className="like-user">
