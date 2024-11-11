@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { View, Text, Image, Alert, FlatList, TouchableOpacity, TextInput, StyleSheet, Dimensions } from 'react-native';
+import { View, Text, Image, Alert, FlatList, TouchableOpacity, TextInput, StyleSheet, Dimensions, ActivityIndicator } from 'react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect, useRouter, useLocalSearchParams } from 'expo-router';
@@ -8,6 +8,9 @@ import * as ImagePicker from 'expo-image-picker';
 import CustomEventEmitter from '../utils/CustomEventEmitter';
 
 const screenWidth = Dimensions.get('window').width;
+
+const CLOUDINARY_URL = 'https://api.cloudinary.com/v1_1/dqqbk8dwo/image/upload';
+const UPLOAD_PRESET = 'Fakestagram';
 
 const ProfileScreen = () => {
   const [userProfile, setUserProfile] = useState(null);
@@ -18,6 +21,7 @@ const ProfileScreen = () => {
   const [description, setDescription] = useState('');
   const [profilePicture, setProfilePicture] = useState('');
   const [profilePictureUrl, setProfilePictureUrl] = useState('');
+  const [isUploading, setIsUploading] = useState(false); // Estado para manejar la carga de la imagen
   const router = useRouter();
   const { userId: routeUserId } = useLocalSearchParams();
 
@@ -31,7 +35,6 @@ const ProfileScreen = () => {
     const perfilAVisitar = await AsyncStorage.getItem('perfilAVisitar');
     const isMyProfile = perfilAVisitar === null;
     setIsMyProfile(isMyProfile);
-    console.log(isMyProfile);
   };
 
   const fetchProfileData = async () => {
@@ -40,10 +43,6 @@ const ProfileScreen = () => {
       const perfilAVisitar = await AsyncStorage.getItem('perfilAVisitar');
       let idToUse = perfilAVisitar && perfilAVisitar !== '' ? perfilAVisitar : routeUserId;
 
-      console.log('Token:', token);
-      console.log('Perfil a visitar:', perfilAVisitar);
-      console.log('Route User ID:', routeUserId);
-      console.log('ID to use:', idToUse);
 
       if (!token) {
         Alert.alert('Error', 'No se encontró un token de autenticación.');
@@ -54,7 +53,6 @@ const ProfileScreen = () => {
         const userId = await AsyncStorage.getItem('userId');
         if (userId) {
           idToUse = userId;
-          console.log('Usando el ID del usuario actual:', idToUse);
         } else {
           Alert.alert('Error', 'No se encontró un ID de usuario válido.');
           return;
@@ -66,9 +64,6 @@ const ProfileScreen = () => {
       });
 
       const profileData = response.data;
-      profileData.profilePicture = profileData.profilePicture
-        ? `${API_BASE_URL}/${profileData.profilePicture.replace(/\\/g, '/')}`
-        : null;
       profileData.posts = profileData.posts.map((post) => ({
         ...post,
         imageUrl: `${API_BASE_URL}/${post.imageUrl.replace(/\\/g, '/')}`,
@@ -88,26 +83,29 @@ const ProfileScreen = () => {
     }
   };
 
-  const uploadImage = async (uri) => {
+  const uploadImageToCloudinary = async (uri) => {
     try {
+      setIsUploading(true); // Iniciar la carga de la imagen
       const formData = new FormData();
-      formData.append('image', {
+      formData.append('file', {
         uri,
-        name: 'profile.jpg',
         type: 'image/jpeg',
+        name: 'profile.jpg',
       });
+      formData.append('upload_preset', UPLOAD_PRESET);
 
-      const token = await AsyncStorage.getItem('token');
-      const response = await axios.post(`${API_BASE_URL}/api/upload`, formData, {
+      const response = await axios.post(CLOUDINARY_URL, formData, {
         headers: {
-          Authorization: `Bearer ${token}`,
           'Content-Type': 'multipart/form-data',
         },
       });
 
-      return response.data.imageUrl;
+      setIsUploading(false); // Finalizar la carga de la imagen
+      console.log('Imagen subida a Cloudinary:', response.data.secure_url);
+      return response.data.secure_url;
     } catch (error) {
-      console.error('Error al subir la imagen:', error);
+      setIsUploading(false); // Finalizar la carga de la imagen en caso de error
+      console.error('Error al subir la imagen a Cloudinary:', error);
       Alert.alert('Error', 'No se pudo subir la imagen.');
       throw error;
     }
@@ -160,7 +158,7 @@ const ProfileScreen = () => {
       });
       if (!result.canceled) {
         setProfilePicture(result.assets[0].uri);
-        const uploadedImageUrl = await uploadImage(result.assets[0].uri);
+        const uploadedImageUrl = await uploadImageToCloudinary(result.assets[0].uri);
         setProfilePictureUrl(uploadedImageUrl);
       }
     } catch (error) {
@@ -220,8 +218,12 @@ const ProfileScreen = () => {
               onChangeText={setDescription}
               style={styles.input}
             />
-            <TouchableOpacity onPress={updateProfile} style={styles.saveButton}>
-              <Text style={styles.saveButtonText}>Guardar</Text>
+            <TouchableOpacity onPress={updateProfile} style={styles.saveButton} disabled={isUploading}>
+              {isUploading ? (
+                <ActivityIndicator size="small" color="#fff" />
+              ) : (
+                <Text style={styles.saveButtonText}>Guardar</Text>
+              )}
             </TouchableOpacity>
             <TouchableOpacity onPress={() => setIsEditing(false)} style={styles.cancelButton}>
               <Text style={styles.cancelButtonText}>Cancelar</Text>
