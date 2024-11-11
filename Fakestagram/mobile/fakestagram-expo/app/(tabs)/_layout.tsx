@@ -45,6 +45,13 @@ export default function Layout() {
             tabPress: handleProfileTabPress,
           }}
         />
+        <Tabs.Screen
+          name="notifications"
+          options={{
+            tabBarIcon: ({ color }) => <TabBarIcon name="bell" color={color} />,
+            title: 'Notifications',
+          }}
+        />
       </Tabs>
 
       <TouchableOpacity
@@ -65,8 +72,8 @@ export default function Layout() {
 const styles = StyleSheet.create({
   addPostButton: {
     position: 'absolute',
-    bottom: 40,
-    left: '45%',
+    bottom: '90%',
+    left: '80%',
     backgroundColor: '#007bff',
     borderRadius: 30,
     width: 50,

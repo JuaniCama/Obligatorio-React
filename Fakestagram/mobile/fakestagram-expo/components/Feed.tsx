@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { View, FlatList, ActivityIndicator, Alert, StyleSheet, Dimensions  } from 'react-native';
+import { View, FlatList, ActivityIndicator, Alert, StyleSheet, Dimensions } from 'react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
@@ -45,9 +45,7 @@ const Feed = () => {
         imageUrl: `${API_BASE_URL}/${post.imageUrl.replace(/\\/g, '/')}`,
         user: {
           ...post.user,
-          profilePicture: post.user.profilePicture
-            ? `${API_BASE_URL}/${post.user.profilePicture.replace(/\\/g, '/')}`
-            : null,
+          profilePicture: post.user.profilePicture || null,
         },
       }));
 

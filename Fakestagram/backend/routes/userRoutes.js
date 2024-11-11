@@ -219,4 +219,3 @@ router.put("/profile/edit", protect, updateUserProfile);
 router.delete("/remove-friend/:friendId", protect, removeFriend);
 
 module.exports = router;
-

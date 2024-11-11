@@ -137,4 +137,3 @@ module.exports = {
   updateUserProfile,
   removeFriend,
 };
-

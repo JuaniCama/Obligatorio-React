@@ -114,8 +114,16 @@ const Post: React.FC<PostProps> = ({ postId, username, userId, profileImageUrl, 
       const response = await axios.post(`${POSTS_ENDPOINT}/${postId}/comments`, { content: comment }, {
         headers: { Authorization: `Bearer ${token}` },
       });
+
+      const newComment = response.data;
+
+      const userResponse = await axios.get(`${COMMENTS_ENDPOINT}/${newComment._id}`, {
+        headers: { "Authorization": `Bearer ${token}` }
+      });
+
+      const commentWithUser = userResponse.data;
       setComment('');
-      setComments([...comments, response.data]);
+      setComments([...comments, commentWithUser]);
     } catch (error) {
       console.error('Error al agregar comentario:', error);
       Alert.alert('Error', 'No se pudo agregar el comentario.');
