@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { REGISTER_ENDPOINT } from '../components/Constants';
 
 const SignUp = ({ onNavigate }) => {
   const [username, setUsername] = useState('');
@@ -15,7 +16,7 @@ const SignUp = ({ onNavigate }) => {
     }
 
     try {
-      const response = await axios.post('http://localhost:3001/api/auth/register', {
+      const response = await axios.post(`${REGISTER_ENDPOINT}`, {
         username,
         email,
         password,
