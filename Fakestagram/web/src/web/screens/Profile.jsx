@@ -46,6 +46,7 @@ function Profile() {
   const [profile, setProfile] = useState({});
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
+  const [profilePicture, setProfilePicture] = useState('');
   const [isEditing, setIsEditing] = useState(false);
 
   const getProfile = async () => {
@@ -55,6 +56,7 @@ function Profile() {
       setProfile(data);
       setUsername(data.user?.username || '');
       setEmail(data.user?.email || '');
+      setProfilePicture(data.user?.profilePicture || '');
     }
   };
 
@@ -63,7 +65,7 @@ function Profile() {
   }, []);
 
   const handleSave = async () => {
-    const updatedProfile = await updateProfile({ username, email });
+    const updatedProfile = await updateProfile({ username, email, profilePicture });
     if (updatedProfile) {
       await getProfile(); // Actualiza el perfil y los posts después de guardar los cambios
       setIsEditing(false);
@@ -130,6 +132,13 @@ function Profile() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="Nuevo correo electrónico"
+          className="profile-input"
+        />
+        <input
+          type="text"
+          value={profilePicture}
+          onChange={(e) => setProfilePicture(e.target.value)}
+          placeholder="Enlace de la nueva foto de perfil"
           className="profile-input"
         />
         <button className="profile-btn save-btn" onClick={handleSave}>Guardar</button>

@@ -1,17 +1,16 @@
 /* Contenedor principal del post */
 .post-container {
   width: 75%; /* Ajusta el tamaño del post */
-  margin: 0 auto;
+  margin: 0 auto 20px auto; /* Agrega un margen inferior de 20px */
   border: 1px solid #ddd;
   border-radius: 10px;
   padding: 15px;
   background-color: #fff;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
 }
-
 .box.feed-view {
   width: 70%; /* Ajusta el ancho del post al 70% del ancho del feed */
-  margin: 0 auto; /* Centra el post */
+  margin: 0 auto 20px auto; /* Agrega un margen inferior de 20px */
 }
 
 /* Contenedor de la imagen del post */

@@ -4,4 +4,8 @@
 
 h2 {
     text-align: center;
-  }
+}
+
+.feed .post-container {
+    margin-bottom: 20px;
+}

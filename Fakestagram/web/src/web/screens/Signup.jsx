@@ -15,11 +15,14 @@ const SignUp = ({ onNavigate }) => {
       return;
     }
 
+    const defaultProfilePicture = 'https://cdn.openart.ai/uploads/image_fQ-uUBHz_1676395337168_512.webp'; // URL de la imagen de perfil predeterminada
+
     try {
       const response = await axios.post(`${REGISTER_ENDPOINT}`, {
         username,
         email,
         password,
+        profilePicture: defaultProfilePicture, // Incluye la URL de la imagen de perfil predeterminada
       });
       localStorage.setItem('token', response.data.token);
       localStorage.setItem('userId', response.data._id);
