@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import AddPostButton from '../../components/AddPostButton';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { NavigationContainer } from '@react-navigation/native';
 
 export default function Layout() {
   const [modalVisible, setModalVisible] = useState(false);
@@ -14,6 +15,7 @@ export default function Layout() {
   };
 
   return (
+    <NavigationContainer>
     <View style={{ flex: 1 }}>
       <Tabs
         screenOptions={{
@@ -29,7 +31,7 @@ export default function Layout() {
         }}
       >
         <Tabs.Screen
-          name="index"
+          name="home"
           options={{
             tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
             title: 'Home',
@@ -66,7 +68,9 @@ export default function Layout() {
         setModalVisible={setModalVisible}
       />
     </View>
+    </NavigationContainer>
   );
+  
 }
 
 const styles = StyleSheet.create({

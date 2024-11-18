@@ -1,4 +1,4 @@
-export const API_BASE_URL = 'https://28dc-2800-a4-152f-6100-b5a4-1023-8c12-d983.ngrok-free.app'
+export const API_BASE_URL = 'https://51cd-2800-a4-1571-b300-a473-fc02-a56-c98d.ngrok-free.app'
 export const POSTS_ENDPOINT = `${API_BASE_URL}/api/posts`;
 export const AUTH_ENDPOINT = `${API_BASE_URL}/api/auth`;
 export const USERS_ENDPOINT = `${API_BASE_URL}/api/users`;

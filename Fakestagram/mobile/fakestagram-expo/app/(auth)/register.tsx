@@ -1,5 +1,5 @@
 import React from 'react';
-import RegisterScreenComponent from '../../screens/RegisterScreenComponent';
+import RegisterScreenComponent from '../../components/RegisterScreenComponent';
 
 export default function RegisterScreen() {
     return <RegisterScreenComponent />;
