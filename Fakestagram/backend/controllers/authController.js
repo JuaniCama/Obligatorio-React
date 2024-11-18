@@ -6,19 +6,20 @@ const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "30d" });
 };
 
-//Register
+// Register
 const registerUser = async (req, res) => {
-  const { username, email, password } = req.body;
+  const { username, email, password, profilePicture } = req.body;
   try {
     const userExists = await User.findOne({ email });
     if (userExists) {
       return res.status(400).json({ message: "El usuario ya existe" });
     }
-    const user = await User.create({ username, email, password });
+    const user = await User.create({ username, email, password, profilePicture });
     res.status(201).json({
       _id: user._id,
       username: user.username,
       email: user.email,
+      profilePicture: user.profilePicture,
       token: generateToken(user._id),
     });
   } catch (error) {
@@ -26,7 +27,7 @@ const registerUser = async (req, res) => {
   }
 };
 
-//Login
+// Login
 const loginUser = async (req, res) => {
   const { email, password } = req.body;
   try {
@@ -36,8 +37,8 @@ const loginUser = async (req, res) => {
         _id: user._id,
         username: user.username,
         email: user.email,
-        token: generateToken(user._id),
         profilePicture: user.profilePicture,
+        token: generateToken(user._id),
       });
     } else {
       res.status(401).json({ message: "Credenciales incorrectas" });

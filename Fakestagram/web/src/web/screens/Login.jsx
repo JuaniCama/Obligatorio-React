@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { LOGIN_ENDPOINT } from '../components/Constants';
 
 const Login = ({ onLogin, onNavigate }) => {
   const [email, setEmail] = useState('');
@@ -14,7 +15,7 @@ const Login = ({ onLogin, onNavigate }) => {
     }
 
     try {
-      const response = await axios.post('http://localhost:3001/api/auth/login', {
+      const response = await axios.post(`${LOGIN_ENDPOINT}`, {
         email,
         password,
       });

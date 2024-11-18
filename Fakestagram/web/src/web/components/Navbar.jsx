@@ -12,10 +12,10 @@ function Navbar({ isLoggedIn, onLogOff, onNavigate }) {
           </button>
         ) : (
           <>
-            <button className="btn" onClick={() => onNavigate('signup')}>
+            <button className="btn" onClick={() => onNavigate('/signup')}>
               Sign Up
             </button>
-            <button className="btn" onClick={() => onNavigate('login')}>
+            <button className="btn" onClick={() => onNavigate('/login')}>
               Login
             </button>
           </>

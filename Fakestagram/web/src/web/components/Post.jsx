@@ -90,16 +90,12 @@ function Post({ postId, userId, username, profileImageUrl, postTime, imageUrl, d
       }, {
         headers: { "Authorization": `Bearer ${token}` }
       });
-
       const newComment = response.data;
-
       // Obtener la información del usuario para el nuevo comentario
       const userResponse = await axios.get(`${COMMENTS_ENDPOINT}/${newComment._id}`, {
         headers: { "Authorization": `Bearer ${token}` }
       });
-
       const commentWithUser = userResponse.data;
-
       setComment('');
       setComments([...comments, commentWithUser]);
     } catch (error) {
@@ -127,7 +123,7 @@ function Post({ postId, userId, username, profileImageUrl, postTime, imageUrl, d
     }
   };
 
-  const handleUsernameClick = () => {
+  const handleUsernameClick = (userId) => {
     if (onNavigate) {
       onNavigate(`/userProfile/${userId}`);
     }
@@ -144,7 +140,7 @@ function Post({ postId, userId, username, profileImageUrl, postTime, imageUrl, d
           </figure>
           <div className="media-content">
             <div className="content-vertical">
-              <strong onClick={handleUsernameClick} style={{ cursor: 'pointer' }}>{username}</strong> <small>• {postTime}</small>
+              <strong onClick={() => handleUsernameClick(userId)} style={{ cursor: 'pointer' }}>{username}</strong> <small>• {postTime}</small>
               <p>{description}</p>
             </div>
           </div>
@@ -200,7 +196,7 @@ function Post({ postId, userId, username, profileImageUrl, postTime, imageUrl, d
           {likeUsers.map(user => (
             <li key={user._id} className="like-user">
               <img src={user.profilePicture} alt={`${user.username}'s profile`} className="like-user-image" />
-              <span>{user.username}</span>
+              <span onClick={() => handleUsernameClick(user._id)} style={{ cursor: 'pointer' }}>{user.username}</span>
             </li>
           ))}
         </ul>
