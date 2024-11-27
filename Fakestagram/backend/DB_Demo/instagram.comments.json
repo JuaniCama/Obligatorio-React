@@ -1,0 +1,192 @@
+[{
+  "_id": {
+    "$oid": "67468fff4c80ca61f6c70498"
+  },
+  "user": {
+    "$oid": "67466da14c80ca61f6c6e3e2"
+  },
+  "post": {
+    "$oid": "67468ca64c80ca61f6c70050"
+  },
+  "content": "Buena foto!",
+  "createdAt": {
+    "$date": "2024-11-27T03:20:31.123Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6746902e4c80ca61f6c704a7"
+  },
+  "user": {
+    "$oid": "67466da14c80ca61f6c6e3e2"
+  },
+  "post": {
+    "$oid": "67468be74c80ca61f6c6fca3"
+  },
+  "content": "Arte puro",
+  "createdAt": {
+    "$date": "2024-11-27T03:21:18.832Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "674690654c80ca61f6c704b6"
+  },
+  "user": {
+    "$oid": "67466da14c80ca61f6c6e3e2"
+  },
+  "post": {
+    "$oid": "674689fd4c80ca61f6c6f947"
+  },
+  "content": "Que buen lugar!",
+  "createdAt": {
+    "$date": "2024-11-27T03:22:13.770Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "674690974c80ca61f6c704de"
+  },
+  "user": {
+    "$oid": "67466da14c80ca61f6c6e3e2"
+  },
+  "post": {
+    "$oid": "67467f804c80ca61f6c6e97f"
+  },
+  "content": "Buena vista!",
+  "createdAt": {
+    "$date": "2024-11-27T03:23:03.461Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "674690ee4c80ca61f6c7052d"
+  },
+  "user": {
+    "$oid": "67466dbb4c80ca61f6c6e3e5"
+  },
+  "post": {
+    "$oid": "67468ce24c80ca61f6c70246"
+  },
+  "content": "Buen lugar!",
+  "createdAt": {
+    "$date": "2024-11-27T03:24:30.503Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6746910a4c80ca61f6c7053c"
+  },
+  "user": {
+    "$oid": "67466dbb4c80ca61f6c6e3e5"
+  },
+  "post": {
+    "$oid": "67468c3f4c80ca61f6c6fe72"
+  },
+  "content": "Excelente foto",
+  "createdAt": {
+    "$date": "2024-11-27T03:24:58.243Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6746911e4c80ca61f6c7054b"
+  },
+  "user": {
+    "$oid": "67466dbb4c80ca61f6c6e3e5"
+  },
+  "post": {
+    "$oid": "67468be74c80ca61f6c6fca3"
+  },
+  "content": "Me gusta",
+  "createdAt": {
+    "$date": "2024-11-27T03:25:18.163Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "674691494c80ca61f6c70569"
+  },
+  "user": {
+    "$oid": "67466dbb4c80ca61f6c6e3e5"
+  },
+  "post": {
+    "$oid": "674684c14c80ca61f6c6eeca"
+  },
+  "content": "Tremendas!",
+  "createdAt": {
+    "$date": "2024-11-27T03:26:01.859Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6746916d4c80ca61f6c7057d"
+  },
+  "user": {
+    "$oid": "67466dbb4c80ca61f6c6e3e5"
+  },
+  "post": {
+    "$oid": "674678e14c80ca61f6c6e615"
+  },
+  "content": "Buenos colores",
+  "createdAt": {
+    "$date": "2024-11-27T03:26:37.908Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "674691a14c80ca61f6c705ea"
+  },
+  "user": {
+    "$oid": "67466dc74c80ca61f6c6e3e8"
+  },
+  "post": {
+    "$oid": "67468ce24c80ca61f6c70246"
+  },
+  "content": "Lindo día!",
+  "createdAt": {
+    "$date": "2024-11-27T03:27:29.077Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "674691cf4c80ca61f6c705f9"
+  },
+  "user": {
+    "$oid": "67466dc74c80ca61f6c6e3e8"
+  },
+  "post": {
+    "$oid": "67468be74c80ca61f6c6fca3"
+  },
+  "content": "Dónde es?",
+  "createdAt": {
+    "$date": "2024-11-27T03:28:15.794Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "674692604c80ca61f6c706a0"
+  },
+  "user": {
+    "$oid": "67466de14c80ca61f6c6e3eb"
+  },
+  "post": {
+    "$oid": "674686c64c80ca61f6c6f217"
+  },
+  "content": "Muy buena foto!",
+  "createdAt": {
+    "$date": "2024-11-27T03:30:40.460Z"
+  },
+  "__v": 0
+}]

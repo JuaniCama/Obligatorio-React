@@ -1,0 +1,70 @@
+[{
+  "_id": {
+    "$oid": "67466da14c80ca61f6c6e3e2"
+  },
+  "username": "Bill",
+  "email": "bill@microsoft.com",
+  "password": "$2a$10$GCChdgJaGGVvQKL4wmAh0ediDadRoQKYMJcKsDOaQ4gy64EpEjmRS",
+  "profilePicture": "https://pbs.twimg.com/profile_images/1674815862879178752/nTGMV1Eo_400x400.jpg",
+  "friends": [],
+  "createdAt": {
+    "$date": "2024-11-27T00:53:53.752Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "67466dbb4c80ca61f6c6e3e5"
+  },
+  "username": "Elon",
+  "email": "elon@spacex.com",
+  "password": "$2a$10$uLnrlGvzzq6EiYdRMYN0uOB6guGMFZfAcNv0YcEYjILXlKYA5pjLC",
+  "profilePicture": "https://upload.wikimedia.org/wikipedia/commons/c/cb/Elon_Musk_Royal_Society_crop.jpg",
+  "friends": [],
+  "createdAt": {
+    "$date": "2024-11-27T00:54:19.097Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "67466dc74c80ca61f6c6e3e8"
+  },
+  "username": "Tim",
+  "email": "tim@apple.com",
+  "password": "$2a$10$Z5dtJssv6vB7oI3cld6HFOAMqVtq/wzlWYr2Q0wIlj6AFjN2ihGvC",
+  "profilePicture": "https://s10.s3c.es/imag/_v0/1280x720/f/0/9/1200x655_tim_cook.jpeg",
+  "friends": [],
+  "createdAt": {
+    "$date": "2024-11-27T00:54:31.085Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "67466de14c80ca61f6c6e3eb"
+  },
+  "username": "Sam",
+  "email": "sam@openai.com",
+  "password": "$2a$10$54.HzogZOmWoObXeEc/VqOCH7vZ07jDu4CJJOX7/dzZ0jjvW7KjiK",
+  "profilePicture": "https://upload.wikimedia.org/wikipedia/commons/a/a2/Sam_Altman_TechCrunch_SF_2019_Day_2_Oct_3_%28cropped%29.jpg",
+  "friends": [],
+  "createdAt": {
+    "$date": "2024-11-27T00:54:57.191Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "67466df24c80ca61f6c6e3ee"
+  },
+  "username": "Larry",
+  "email": "larry@google.com",
+  "password": "$2a$10$O5hwpDh/.bnoDKNxtcLFQuJSwM1dO2Myst7pfOpY0J/EjAE0RaCAu",
+  "profilePicture": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/Larry_Page_in_the_European_Parliament%2C_17.06.2009_%28cropped%29.jpg/220px-Larry_Page_in_the_European_Parliament%2C_17.06.2009_%28cropped%29.jpg",
+  "friends": [],
+  "createdAt": {
+    "$date": "2024-11-27T00:55:14.966Z"
+  },
+  "__v": 0
+}]
