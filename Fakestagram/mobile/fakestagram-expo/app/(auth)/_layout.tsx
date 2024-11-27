@@ -8,6 +8,7 @@ const Stack = createStackNavigator();
 
 export default function AuthLayout() {
   return (
+    <NavigationContainer>
       <Stack.Navigator
         screenOptions={{
           headerShown: false,
@@ -16,5 +17,6 @@ export default function AuthLayout() {
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Register" component={RegisterScreen} />
       </Stack.Navigator>
+    </NavigationContainer>
   );
 }
