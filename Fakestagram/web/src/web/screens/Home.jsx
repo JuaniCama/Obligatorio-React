@@ -73,7 +73,7 @@ function Home({ onNavigate }) {
               userId={post.user?._id}
               username={post.user?.username || 'Usuario desconocido'}
               profileImageUrl={post.user?.profilePicture || 'defaultProfileImageUrl'}
-              postTime={post.createdAt}
+              postTime={new Date(post.createdAt).toLocaleString()}
               imageUrl={post.imageUrl}
               description={post.caption}
               likes={post.likes}
