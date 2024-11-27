@@ -21,7 +21,7 @@ const ProfileScreen = () => {
   const [description, setDescription] = useState('');
   const [profilePicture, setProfilePicture] = useState('');
   const [profilePictureUrl, setProfilePictureUrl] = useState('');
-  const [isUploading, setIsUploading] = useState(false); // Estado para manejar la carga de la imagen
+  const [isUploading, setIsUploading] = useState(false);
   const router = useRouter();
   const { userId: routeUserId } = useLocalSearchParams();
 
@@ -42,7 +42,6 @@ const ProfileScreen = () => {
       const token = await AsyncStorage.getItem('token');
       const perfilAVisitar = await AsyncStorage.getItem('perfilAVisitar');
       let idToUse = perfilAVisitar && perfilAVisitar !== '' ? perfilAVisitar : routeUserId;
-
 
       if (!token) {
         Alert.alert('Error', 'No se encontró un token de autenticación.');
@@ -75,7 +74,7 @@ const ProfileScreen = () => {
       setProfilePicture(profileData.user.profilePicture);
       setProfilePictureUrl(profileData.user.profilePicture);
       setLoading(false);
-      handleProfileTabPress(); // Llamar a handleProfileTabPress después de cargar el perfil
+      handleProfileTabPress();
     } catch (error) {
       console.error('Error al cargar el perfil:', error);
       Alert.alert('Error', 'No se pudo cargar el perfil.');
@@ -85,7 +84,7 @@ const ProfileScreen = () => {
 
   const uploadImageToCloudinary = async (uri) => {
     try {
-      setIsUploading(true); // Iniciar la carga de la imagen
+      setIsUploading(true);
       const formData = new FormData();
       formData.append('file', {
         uri,
@@ -100,11 +99,11 @@ const ProfileScreen = () => {
         },
       });
 
-      setIsUploading(false); // Finalizar la carga de la imagen
+      setIsUploading(false);
       console.log('Imagen subida a Cloudinary:', response.data.secure_url);
       return response.data.secure_url;
     } catch (error) {
-      setIsUploading(false); // Finalizar la carga de la imagen en caso de error
+      setIsUploading(false);
       console.error('Error al subir la imagen a Cloudinary:', error);
       Alert.alert('Error', 'No se pudo subir la imagen.');
       throw error;
@@ -142,7 +141,7 @@ const ProfileScreen = () => {
       }));
       setIsEditing(false);
       Alert.alert('Perfil actualizado', 'Tu perfil se ha actualizado exitosamente.');
-      fetchProfileData(); // Refrescar los datos del perfil después de la actualización
+      fetchProfileData();
     } catch (error) {
       console.error('Error al actualizar el perfil:', error);
       Alert.alert('Error', 'No se pudo actualizar el perfil.');
@@ -302,7 +301,7 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   description: {
-    color: '#888',
+    color: '#fff',
     textAlign: 'center',
     marginBottom: 10,
   },
@@ -339,6 +338,7 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
     paddingHorizontal: 20,
     borderRadius: 20,
+    marginBottom: 10,
   },
   logoutText: {
     color: '#fff',

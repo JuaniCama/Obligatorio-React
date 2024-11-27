@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, Alert, TouchableOpacity, Image } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Image, Alert } from 'react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import styles from '../styles/styles';
@@ -15,12 +15,11 @@ const LoginScreenComponent = () => {
     try {
       const response = await axios.post(`${AUTH_ENDPOINT}/login`, { email, password });
       await AsyncStorage.setItem('token', response.data.token);
-      await AsyncStorage.setItem('userId', response.data._id); // Asegúrate de guardar el userId
+      await AsyncStorage.setItem('userId', response.data._id);
       router.push('/(tabs)/home');
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        console.error('Error de autenticación:', error.response?.data || error.message);
-        Alert.alert('Error al iniciar sesión', error.response?.data?.message || 'Credenciales incorrectas.');
+      if (error.response) {
+        Alert.alert('Error al iniciar sesión', error.response.data.message || 'Credenciales incorrectas.');
       } else {
         console.error('Error desconocido:', error);
         Alert.alert('Error al iniciar sesión', 'Ocurrió un error desconocido. Intenta de nuevo.');
